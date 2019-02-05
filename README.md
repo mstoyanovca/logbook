@@ -1,1 +1,1 @@
-Built as a proof of concept with Scala, Play and Slick, to host on AWS.
+Built as a proof of concept with Scala, Play, Slick and Angular, to host on AWS.
