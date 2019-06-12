@@ -1,7 +1,7 @@
-name := "va3aui"
+name := "lz4mn"
 version := "1.0"
 
-lazy val `va3aui` = (project in file(".")).enablePlugins(PlayScala)
+lazy val `lz4mn` = (project in file(".")).enablePlugins(PlayScala)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
