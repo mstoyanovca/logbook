@@ -1,0 +1,191 @@
+<div class="min-h">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">
+      <img class="d-inline-block align-top" src="../../assets/logbook.jpg" width="30" height="30" alt="">
+      Log book
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#logBook" role="tab">Log Book</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#addQso" role="tab">Add a QSO</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="logBook" role="tabpanel">
+      <!-- Search form: -->
+      <hr class="mt-4">
+      <form id="searchForm">
+        <div class="form-group row">
+          <label class="col-form-label col-lg-1 col-md-2" for="search">Search</label>
+          <div class="input-group col-lg-4 col-md-10">
+            <input type="text" class="form-control" id="search" name="search" [(ngModel)]="filter" (keyup)="filterData()" placeholder="Type data to search for..."/>
+          </div>
+        </div>
+      </form>
+      <!-- Log book accordion heading: -->
+      <div class="row m-0" style="border-top: 1px solid lightgray;" id="accordionHeader">
+        <div class="col-md-3 col-4 px-1 py-2" ><h6>Date</h6></div>
+        <div class="col-md-2 col-4 px-1 py-2"><h6>Time</h6></div>
+        <div class="col-md-2 col-4 px-1 py-2 sortable" (click)="sortByCallsign()"><img src="{{callsignImagePath}}" *ngIf="callsignImagePath != ''"><h6>Callsign</h6></div>
+        <div class="col-md-2 px-1 py-2 d-none d-md-block sortable" (click)="sortByBand()"><img src="{{bandImagePath}}" *ngIf="bandImagePath != ''"><h6>Band</h6></div>
+        <div class="col-md-1 px-1 py-2 d-none d-md-block"><h6>RST</h6></div>
+      </div>
+      <!-- Log book accordion: -->
+      <div class="accordion mb-2" id="accordion">
+        <div class="card" *ngFor="let qso of qsos | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; index as i; even as even;">
+          <div class="card-header p-0" data-toggle="collapse" [attr.data-target]="'#collapse'+i">
+            <div class="row m-0 sortable" id="accordion-row" [ngStyle]="{'background-color': even ? 'white' : ''}">
+              <div class="col-md-3 col-4 p-1">{{qso.date.year}}-{{qso.date.month}}-{{qso.date.day}}</div>
+              <div class="col-md-2 col-4 p-1" *ngIf="qso.time.minute!==0">{{qso.time.hour}}:{{qso.time.minute}}</div>
+              <div class="col-md-2 col-4 p-1" *ngIf="qso.time.minute===0">{{qso.time.hour}}:00</div>
+              <div class="col-md-2 col-4 p-1" >{{qso.callsign}}</div>
+              <div class="col-md-2 d-none d-md-block p-1">{{qso.band}}</div>
+              <div class="col-md-1 d-none d-md-block p-1">{{qso.rst}}</div>
+            </div>
+          </div>
+          <div id="{{'collapse'+i}}" class="collapse" data-parent="#accordion">
+            <div class="card-body p-0">
+              <div class="row d-md-none m-0">
+                <div class="col-3 p-1">Band:</div>
+                <div class="col-9 p-1">{{qso.band}}</div>
+              </div>
+              <div class="row d-md-none m-0">
+                <div class="col-3 p-1">RST:</div>
+                <div class="col-9 p-1">{{qso.rst}}</div>
+              </div>
+              <div class="row m-0">
+                <div class="col-3 p-1">Name:</div>
+                <div class="col-9 p-1">{{qso.name}}</div>
+              </div>
+              <div class="row m-0">
+                <div class="col-3 p-1">QTH:</div>
+                <div class="col-9 p-1">{{qso.qth}}</div>
+              </div>
+              <div class="row m-0">
+                <div class="col-3 p-1">Notes:</div>
+                <div class="col-9 p-1">{{qso.notes}}</div>
+              </div>
+              <div class="row m-0">
+                <div class="col-2 offset-10 p-1">
+                  <button type="button" class="btn btn-danger btn-sm float-right" data-toggle="modal" data-target="#deleteQsoModal" (click)="setQsoToDelete(qso)"><i class="fa fa-close"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="collectionSize"  [maxSize]="3" [boundaryLinks]="true" size="sm"></ngb-pagination>
+    </div>
+
+    <div class="tab-pane" id="addQso" role="tabpanel">
+      <!-- Add a QSO form: -->
+      <form class="mt-4" id="addQsoForm" #addQsoForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group row d-flex align-items-center">
+          <label class="col-form-label col-lg-1 col-md-2" for="date">Date</label>
+          <div class="input-group col-lg-5 col-md-10">
+            <input class="form-control" id="date" name="date" [(ngModel)]="newQso.date" #date="ngModel" ngbDatepicker #d="ngbDatepicker" placeholder="yyyy-mm-dd" required>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" type="button" (click)="d.toggle()"></button>
+            </div>
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2" for="time">UTC</label>
+          <div class="input-group col-lg-4 col-md-10">
+            <ngb-timepicker id="time" name="time" [(ngModel)]="newQso.time" #time="ngModel" required></ngb-timepicker>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.invalid">Date is required</div>
+          <!-- Properly position the error message: -->
+          <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.valid&&time.invalid">Time is required</div>
+          <div class="form-text text-danger col-lg-2 offset-lg-4 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.invalid&&time.invalid">Time is required</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-lg-1 col-md-2" for="callsign">Callsign</label>
+          <div class="input-group col-lg-2 col-md-10">
+            <input type="text" class="form-control" id="callsign" name="callsign" [(ngModel)]="newQso.callsign" #callsign="ngModel" placeholder="Callsign" required pattern="[A-Z]{2}\d{1}[A-Z]{2,3}">
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="name">Name</label>
+          <div class="input-group col-lg-2 col-md-10 gap-top">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Name" [(ngModel)]="newQso.name" maxlength="48">
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="qth">QTH</label>
+          <div class="input-group col-lg-2 col-md-10 gap-top">
+            <input type="text" class="form-control" id="qth" name="qth" placeholder="QTH" [(ngModel)]="newQso.qth" maxlength="48">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="form-text text-danger col-lg-4 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.errors?.required">Callsign is required</div>
+          <div class="form-text text-danger col-lg-4 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&!callsign.errors?.required&&callsign.invalid">Callsign is invalid</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-lg-1 col-md-2" for="band">Band</label>
+          <div class="input-group col-lg-2 col-md-10">
+            <select class="form-control" id="band" name="band" [(ngModel)]="newQso.band">
+              <option>30m</option>
+              <option>2m</option>
+              <option>70cm</option>
+            </select>
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="mode">Mode</label>
+          <div class="input-group col-lg-2 col-md-10 gap-top">
+            <select class="form-control" id="mode" name="mode" [(ngModel)]="newQso.mode">
+              <option>CW</option>
+              <option>SSB</option>
+              <option>FM</option>
+            </select>
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="rst">RST</label>
+          <div class="input-group col-lg-2 col-md-10 gap-top">
+            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rst" #rst="ngModel" required pattern="[1-5][1-9][1-9]">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rst.errors?.required">RST is required</div>
+          <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&!rst.errors?.required&&rst.invalid">RST is invalid</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-lg-1 col-md-2" for="notes">Notes</label>
+          <div class="input-group col-lg-8 col-md-10">
+            <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Notes" [(ngModel)]="newQso.notes" maxlength="128"></textarea>
+          </div>
+        </div>
+        <button class="btn btn-primary offset-lg-1 offset-md-2" type="submit" [disabled]="addQsoForm.form.invalid">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete a qso modal -->
+  <div class="modal fade bd-example-modal-sm" style="min-width: 300px;" id="deleteQsoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteQsoModalLabel">Delete a log book record</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete the log book record with {{qsoToDelete.callsign}}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeQsoModal" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="delete(qsoToDelete)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

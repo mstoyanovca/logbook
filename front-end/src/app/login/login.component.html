@@ -1,0 +1,127 @@
+<div class="row m-0 min-h">
+
+  <!-- Left panel -->
+  <div class="col-md-3 mt-3 p-3" style="background-image: url('../../assets/pcb20.jpg'); border-radius: 4px;" id="left-panel">
+    <h6> Projects: </h6>
+    <a routerLink="/signal-generator" routerLinkActive="active">DDS signal generator</a>
+    <br>
+    <a routerLink="/vfo" routerLinkActive="active">DDS VFO</a>
+    <br>
+    <a routerLink="/transceiver" routerLinkActive="active">80m transceiver</a>
+  </div>
+
+  <!-- Center panel -->
+  <div class="col-lg-6 col-md-9 login-form" id="center-panel">
+    <p class="text-justify">I've shared a few projects, which I am currently working on, with schematics, description and source code.</p>
+    <p class="text-justify">If you are in my log book, a QSL card is available for download.</p>
+    <p class="text-justify">The rest of the web site is for personal use, and it requires login.</p>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="mt-3">
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label" for="email">Email:</label>
+        <div class="col-md-10">
+          <input class="form-control" type="email" id="email" name="email" placeholder="Email" [(ngModel)]="user.email" #email="ngModel" required email>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="form-text text-danger col-md-10 offset-md-2" id="emailReq" *ngIf="(loginForm.touched||loginForm.dirty)&&email.errors?.required">
+          Email is required
+        </div>
+        <div class="form-text text-danger col-md-10 offset-md-2" id="emailInv" *ngIf="(loginForm.touched||loginForm.dirty)&&!email.errors?.required&&email.invalid">
+          Email is invalid
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label" for="password">Password:</label>
+        <div class="col-md-10">
+          <input class="form-control" type="password" id="password" name="password" placeholder="Password" [(ngModel)]="user.password" #password="ngModel" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="form-text text-danger col-md-10 offset-md-2" id="pwdReq" *ngIf="(loginForm.touched||loginForm.dirty)&&password.invalid">
+          Password is required
+        </div>
+        <div class="form-text text-danger col-md-10 offset-md-2" id="authErr" *ngIf="!email.errors?.required&&!email.invalid&&!password.invalid&&authenticationError.length>0">
+          {{authenticationError}}
+        </div>
+      </div>
+      <button class="btn btn-primary offset-md-2" type="submit" [disabled]="!loginForm.form.valid||loggedIn">Submit</button>
+    </form>
+  </div>
+
+  <!-- Right panel -->
+  <div class="col-lg-3 mt-3 p-3 rounded" style="border: 1px solid lightblue;" id="right-panel">
+    <h6> Sign-in with: </h6>
+    <div>Facebook</div>
+    <div>LinkedIn</div>
+    <div>Google</div>
+    <hr>
+    <a routerLink="/log-book" routerLinkActive="active">Logbook</a>
+    <br>
+    <a routerLink="/request-qsl" routerLinkActive="active">QSL</a>
+    <hr>
+    <button class="btn btn-link p-0" *ngIf="loggedIn" (click)="logout()">Logout</button>
+    <br *ngIf="loggedIn">
+    <button class="btn btn-link p-0" id="forgotPwdBtn" *ngIf="loggedIn" data-toggle="modal" data-target="#changePasswordModal">Change password</button>
+    <button class="btn btn-link p-0" *ngIf="!loggedIn" data-toggle="modal" data-target="#forgotPasswordModal">Forgot password</button>
+  </div>
+</div>
+
+<!-- Forgot password modal -->
+<div class="modal fade" style="min-width: 300px;" id="forgotPasswordModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reset your password</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #resetPasswordForm="ngForm">
+          <div class="form-group">
+            <label for="resetPasswordEmail">Email address</label>
+            <input class="form-control" id="resetPasswordEmail" name="resetPasswordEmail" type="email" [(ngModel)]="resetPasswordEmail" placeholder="Enter email" required email>
+            <small class="form-text text-muted">A password reset link will be sent</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeForgotPasswordModal" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary" (click)="resetPassword()" [disabled]="!resetPasswordForm.form.valid">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change password modal -->
+<div class="modal fade" style="min-width: 300px;" id="changePasswordModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Change your password</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #changePasswordForm="ngForm">
+          <div class="form-group">
+            <label for="oldPassword">Old password</label>
+            <input class="form-control" id="oldPassword" name="oldPassword" type="password" [(ngModel)]="oldPassword" placeholder="Enter the old password" required>
+            <label class="mt-3" for="newPassword">New password</label>
+            <input class="form-control" id="newPassword" name="newPassword" type="password" [(ngModel)]="newPassword" placeholder="Enter a new password" required
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*()<>?]).{6,}">
+            <label class="mt-3" for="newPasswordConfirm">Confirm the new password</label>
+            <input class="form-control" id="newPasswordConfirm" name="newPasswordConfirm" type="password" [(ngModel)]="newPasswordConfirm" placeholder="Confirm the new password"
+                   required pattern="{{newPassword}}">
+            <small class="form-text text-muted text-justify">Min 6 characters, at least one capital letter, a lower case letter, a number, and a special character.</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeChangePasswordModal" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary" (click)="changePassword()" [disabled]="!changePasswordForm.form.valid">Change</button>
+      </div>
+    </div>
+  </div>
+</div>
