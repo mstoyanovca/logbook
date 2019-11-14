@@ -18,12 +18,12 @@ object FrontEndRunHook {
       }
 
       override def beforeStarted(): Unit = {
-        if (!(base / "ui" / "node_modules").exists()) Process(npmInstall, base / "ui").!
+        if (!(base / "front-end" / "node_modules").exists()) Process(npmInstall, base / "front-end").!
       }
 
       override def afterStarted(): Unit = {
         process = Option(
-          Process(npmRun, base / "ui").run
+          Process(npmRun, base / "front-end").run
         )
       }
 
