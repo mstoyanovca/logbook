@@ -1,5 +1,0 @@
-# Serve index page from public directory
-GET        /             controllers.FrontEndController.index()
-
-# Serve static assets under public directory
-GET        /*file        controllers.FrontEndController.assetOrDefault(file)
