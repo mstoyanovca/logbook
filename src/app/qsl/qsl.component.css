@@ -1,0 +1,30 @@
+p {
+  margin: 0;
+}
+
+p.contact {
+  width: 185px;
+  margin: auto;
+  background-color: lightgray;
+  opacity: 0.8;
+}
+
+table {
+  width: 500px;
+  margin: 55px auto 0 auto;
+  border-collapse: separate !important;
+  border-spacing: 0;
+  border-radius: 8px;
+  background-color: lightgray;
+}
+
+td {
+  width: 100px;
+  padding: 4px;
+  text-align: center;
+}
+
+tbody td {
+  color: blue;
+  font-family: 'Margarine', cursive;
+}

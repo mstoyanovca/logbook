@@ -1,0 +1,10 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import "../node_modules/font-awesome/css/font-awesome.css";
+
+html, body {
+  min-width: 320px;
+}
+
+.min-h {
+  min-height: 450px;
+}

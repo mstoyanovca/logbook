@@ -1,0 +1,45 @@
+#oldPassword.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid green;
+}
+
+#oldPassword.ng-invalid:not(form)  {
+  border-left: 5px solid red;
+}
+
+#newPassword.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid green; /* green */
+}
+
+#newPassword.ng-invalid:not(form)  {
+  border-left: 5px solid red;
+}
+
+#newPasswordConfirm.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid green;
+}
+
+#newPasswordConfirm.ng-invalid:not(form)  {
+  border-left: 5px solid red;
+}
+
+/*phones:*/
+@media (max-width: 767.98px) {
+  .login-form {
+    padding: 15px 0 0 0;
+  }
+}
+
+/*tablets:*/
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .login-form {
+    padding: 15px 0 15px 15px;
+  }
+}
+
+/*desktops:*/
+@media (min-width: 992px) {
+  .login-form {
+    padding: 15px;
+  }
+}
+
