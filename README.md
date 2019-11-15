@@ -1,2 +1,2 @@
 - Scala, sbt, ScalaTEst, Play, Slick
-- Angular, Bootsrtap, npm, Jasmine
+- Angular, TS, Bootsrtap, npm, Jasmine
