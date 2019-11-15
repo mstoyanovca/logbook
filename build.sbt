@@ -1,8 +1,10 @@
 name := "va3aui"
-version := "1.0"
-scalaVersion := "2.12.2"
+version := "1.0-SNAPSHOT"
+scalaVersion := "2.12.8"
 
-lazy val `va3aui` = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
+  watchSources ++= (baseDirectory.value / "front-end" ** "*").get
+)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
