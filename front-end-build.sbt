@@ -24,22 +24,22 @@ def executeUiTests(implicit dir: File): Int = ifNodeModulesInstalled(runOnComman
 
 def executeProdBuild(implicit dir: File): Int = ifNodeModulesInstalled(runOnCommandline(FrontEndCommands.build))
 
-lazy val `ui-test` = TaskKey[Unit]("Run UI tests when testing application.")
+lazy val `front-end-test` = TaskKey[Unit]("Run Front End tests when testing application.")
 
-`ui-test` := {
-  implicit val userInterfaceRoot: File = baseDirectory.value / "ui"
-  if (executeUiTests != Success) throw new Exception("UI tests failed!")
+`front-end-test` := {
+  implicit val userInterfaceRoot: File = baseDirectory.value / "front-end"
+  if (executeUiTests != Success) throw new Exception("Front End tests failed!")
 }
 
-lazy val `ui-prod-build` = TaskKey[Unit]("Run UI build when packaging the application.")
+lazy val `front-end-prod-build` = TaskKey[Unit]("Run Front End build when packaging the application.")
 
-`ui-prod-build` := {
-  implicit val userInterfaceRoot: File = baseDirectory.value / "ui"
-  if (executeProdBuild != Success) throw new Exception("Oops! UI Build crashed.")
+`front-end-prod-build` := {
+  implicit val userInterfaceRoot: File = baseDirectory.value / "front-end"
+  if (executeProdBuild != Success) throw new Exception("Oops! Front End Build crashed.")
 }
 
-dist := (dist dependsOn `ui-prod-build`).value
+dist := (dist dependsOn `front-end-prod-build`).value
 
-stage := (stage dependsOn `ui-prod-build`).value
+stage := (stage dependsOn `front-end-prod-build`).value
 
-test := ((test in Test) dependsOn `ui-test`).value
+test := ((test in Test) dependsOn `front-end-test`).value

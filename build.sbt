@@ -1,6 +1,6 @@
 name := "va3aui"
-version := "1.0-SNAPSHOT"
-scalaVersion := "2.12.8"
+version := "19.11.1-SNAPSHOT"
+scalaVersion := "2.12.10"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   watchSources ++= (baseDirectory.value / "front-end" ** "*").get
@@ -11,4 +11,4 @@ resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
 
 libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice)
 
-unmanagedResourceDirectories in Test <+= baseDirectory(_ /"target/web/public/test")
+unmanagedResourceDirectories in Test += baseDirectory(_ /"target/web/public/test").value
