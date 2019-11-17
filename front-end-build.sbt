@@ -24,18 +24,18 @@ def executeUiTests(implicit dir: File): Int = ifNodeModulesInstalled(runOnComman
 
 def executeProdBuild(implicit dir: File): Int = ifNodeModulesInstalled(runOnCommandline(FrontEndCommands.build))
 
-lazy val `front-end-test` = TaskKey[Unit]("Run Front End tests when testing application.")
+lazy val `front-end-test` = TaskKey[Unit]("Run Front End tests when testing application")
 
 `front-end-test` := {
   implicit val userInterfaceRoot: File = baseDirectory.value / "front-end"
-  if (executeUiTests != Success) throw new Exception("Front End tests failed!")
+  if (executeUiTests != Success) throw new Exception("Front End tests failed")
 }
 
-lazy val `front-end-prod-build` = TaskKey[Unit]("Run Front End build when packaging the application.")
+lazy val `front-end-prod-build` = TaskKey[Unit]("Run Front End build when packaging the application")
 
 `front-end-prod-build` := {
   implicit val userInterfaceRoot: File = baseDirectory.value / "front-end"
-  if (executeProdBuild != Success) throw new Exception("Oops! Front End Build crashed.")
+  if (executeProdBuild != Success) throw new Exception("Front End Build crashed")
 }
 
 dist := (dist dependsOn `front-end-prod-build`).value
