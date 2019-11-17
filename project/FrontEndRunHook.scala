@@ -8,7 +8,6 @@ object FrontEndRunHook {
     object UIBuildHook extends PlayRunHook {
       var process: Option[Process] = None
 
-      // Change these commands if you want to use Yarn.
       var npmInstall: String = FrontEndCommands.dependencyInstall
       var npmRun: String = FrontEndCommands.serve
 
