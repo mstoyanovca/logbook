@@ -9,7 +9,7 @@ import play.api.mvc._
 class FrontEndController @Inject()(assets: Assets, errorHandler: HttpErrorHandler, config: Configuration, cc: ControllerComponents) extends AbstractController(cc) {
 
   def echo: Action[AnyContent] = Action { request =>
-    Ok("Got request [" + request + "]")
+    Ok("Received a request: " + request)
   }
 
   def index: Action[AnyContent] = assets.at("index.html")
