@@ -1,16 +1,4 @@
-# compiled output
-/dist
-/tmp
-/out-tsc
-
-# dependencies
-/node_modules
-
-# profiling files
-chrome-profiler-events.json
-speed-measure-plugin.json
-
-# IDEs and editors
+# IDEs
 /.idea
 .project
 .classpath
@@ -18,6 +6,10 @@ speed-measure-plugin.json
 *.launch
 .settings/
 *.sublime-workspace
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
 
 # misc
 /.sass-cache
@@ -33,5 +25,11 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# output
+/dist
+/tmp
+/out-tsc
+
 # Angular
 package-lock.json
+/node_modules/

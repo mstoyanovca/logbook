@@ -33,7 +33,7 @@ export class LoginComponent {
       return;
     }
 
-    this.logger.log('Logging in with email = ' + this.user.email + ' ...');
+    this.logger.log('Logging in with an email = ' + this.user.email + ' ...');
 
     if (this.user.email === 'mstoyanovca@gmail.com' && this.user.password === 'password') {
       // register, this would normally be stored in a back end DB:
@@ -50,7 +50,7 @@ export class LoginComponent {
         },
         error => {
           this.logger.log('Error logging in: ' + JSON.stringify(error));
-          this.authenticationError = 'Incorrect email or password';
+          this.authenticationError = 'Incorrect email and password';
         });
   }
 
