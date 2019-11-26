@@ -9,7 +9,7 @@ describe('BackendInterceptor', () => {
   let httpMock: HttpTestingController;
   let backendInterceptor: BackendInterceptor;
 
-  const user = new User(1, 'a@gmail.com', 'password');
+  const user = new User(1, 'a@gmail.com', 'password', '');
   const requestBody = {
     id: user.id,
     username: user.email,

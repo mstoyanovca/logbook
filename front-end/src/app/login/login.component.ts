@@ -4,69 +4,61 @@ import {AuthenticationService} from '../service/authentication.service';
 import {first} from 'rxjs/operators';
 import {NGXLogger} from 'ngx-logger';
 
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
-})
-
+@Component({selector: 'app-login', templateUrl: './login.component.html', styleUrls: ['./login.component.css']})
 export class LoginComponent {
-  user = new User(0, '', '');
-  authenticationError = '';
-  loggedIn: boolean;
+    user = new User(0, '', '', '');
+    authenticationError = '';
+    loggedIn: boolean;
 
-  resetPasswordEmail: string;
+    resetPasswordEmail: string;
 
-  oldPassword: string;
-  newPassword: string;
-  newPasswordConfirm: string;
+    oldPassword: string;
+    newPassword: string;
+    newPasswordConfirm: string;
 
-  constructor(
-    private authenticationService: AuthenticationService,
-    private logger: NGXLogger) {
+    constructor(
+        private authenticationService: AuthenticationService,
+        private logger: NGXLogger) {
 
-    this.loggedIn = authenticationService.isLoggedIn();
-  }
-
-  onSubmit() {
-    if (this.loggedIn) {
-      return;
+        if (this.authenticationService.currentUserValue) {
+            this.loggedIn = true;
+        }
     }
 
-    this.logger.log('Logging in with an email = ' + this.user.email + ' ...');
+    onSubmit() {
+        if (this.loggedIn) {
+            return;
+        }
 
-    if (this.user.email === 'mstoyanovca@gmail.com' && this.user.password === 'password') {
-      // register, this would normally be stored in a back end DB:
-      localStorage.setItem('users', JSON.stringify([new User(1, 'mstoyanovca@gmail.com', 'password')]));
+        this.logger.log('Logging in with an email ' + this.user.email);
+
+        this.authenticationService.login(this.user.email, this.user.password)
+            .pipe(first())
+            .subscribe(
+                data => {
+                    this.loggedIn = true;
+                    this.authenticationError = '';
+                    this.logger.log('Logged in');
+                },
+                error => {
+                    this.logger.log('Error logging in: ' + JSON.stringify(error));
+                    this.authenticationError = 'Incorrect email and password';
+                });
     }
 
-    this.authenticationService.login(this.user.email, this.user.password)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.loggedIn = true;
-          this.authenticationError = '';
-          this.logger.log('Logged in.');
-        },
-        error => {
-          this.logger.log('Error logging in: ' + JSON.stringify(error));
-          this.authenticationError = 'Incorrect email and password';
-        });
-  }
+    logout() {
+        this.authenticationService.logout();
+        this.loggedIn = false;
+        this.logger.log('Logged out');
+    }
 
-  logout() {
-    this.authenticationService.logout();
-    this.loggedIn = false;
-    this.logger.log('Logged out.');
-  }
+    resetPassword() {
+        this.logger.log('Password reset requested for email: ' + this.resetPasswordEmail);
+        document.getElementById('closeForgotPasswordModal').click();
+    }
 
-  resetPassword() {
-    this.logger.log('Password reset requested for email: ' + this.resetPasswordEmail);
-    document.getElementById('closeForgotPasswordModal').click();
-  }
-
-  changePassword() {
-    this.logger.log('Password change requested ...');
-    document.getElementById('closeChangePasswordModal').click();
-  }
+    changePassword() {
+        this.logger.log('Password change requested');
+        document.getElementById('closeChangePasswordModal').click();
+    }
 }

@@ -10,7 +10,7 @@ import {LogBookComponent} from './log-book/log-book.component';
 import {RequestQslComponent} from './request-qsl/request-qsl.component';
 import {QslComponent} from './qsl/qsl.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
-import {AuthenticationGuard} from './guard/authentication.guard';
+import {AuthenticationGuard} from './authentication-guard/authentication.guard';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
