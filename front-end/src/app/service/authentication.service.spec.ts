@@ -56,7 +56,7 @@ describe('AuthenticationService', () => {
       req.flush(requestBody);
     });
 
-    const req = httpMock.expectOne('/user/authenticate');
+    const req = httpMock.expectOne('/user/login');
     expect(req.request.method).toBe('POST');
   });
 
@@ -66,7 +66,7 @@ describe('AuthenticationService', () => {
       expect(error).toBe('Incorrect username or password.');
     });
 
-    const req = httpMock.expectOne('/user/authenticate');
+    const req = httpMock.expectOne('/user/login');
     expect(req.request.method).toBe('POST');
   });
 

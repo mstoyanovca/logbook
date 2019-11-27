@@ -29,8 +29,8 @@ export class BackendInterceptor implements HttpInterceptor {
 
         function handleRoute() {
             switch (true) {
-                case url.endsWith('/user/authenticate') && method === 'POST':
-                    return authenticate();
+                case url.endsWith('/user/login') && method === 'POST':
+                    return login();
                 case url.endsWith('/users') && method === 'GET':
                     return getUsers();
                 default:
@@ -38,7 +38,7 @@ export class BackendInterceptor implements HttpInterceptor {
             }
         }
 
-        function authenticate() {
+        function login() {
             const {email, password} = body;
             const user = users.find(x => x.email === email && x.password === password);
             if (!user) return error('Email or password is incorrect');

@@ -49,7 +49,7 @@ describe('BackendInterceptor', () => {
       req.flush(requestBody);
     });
 
-    const req = httpMock.expectOne('/user/authenticate');
+    const req = httpMock.expectOne('/user/login');
     expect(req.request.method).toBe('POST');
   });
 
@@ -59,7 +59,7 @@ describe('BackendInterceptor', () => {
       expect(error).toBe('Incorrect username or password.');
     });
 
-    const req = httpMock.expectOne('/user/authenticate');
+    const req = httpMock.expectOne('/user/login');
     expect(req.request.method).toBe('POST');
   });
 });

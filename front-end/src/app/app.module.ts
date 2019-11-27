@@ -5,7 +5,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {HttpClientInMemoryWebApiModule} from 'angular-in-memory-web-api';
 import {AngularFontAwesomeModule} from 'angular-font-awesome';
-import {BackendInterceptor} from './interceptor/backend.interceptor';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 
 import {AppComponent} from './app.component';
@@ -55,8 +54,8 @@ import {environment} from '../environments/environment'
     ],
     providers: [
         {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-        {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-        {provide: HTTP_INTERCEPTORS, useClass: BackendInterceptor, multi: true}
+        {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+        // {provide: HTTP_INTERCEPTORS, useClass: BackendInterceptor, multi: true}
     ],
     bootstrap: [AppComponent]
 })
