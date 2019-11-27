@@ -1,2 +1,5 @@
-GET        /             controllers.FrontEndController.index()
-GET        /*file        controllers.FrontEndController.assetOrDefault(file)
+GET         /             controllers.FrontEndController.index()
+GET         /login        controllers.LoginController.login()
+POST        /login        controllers.LoginController.login()
+
+GET         /*file        controllers.FrontEndController.assetOrDefault(file)
