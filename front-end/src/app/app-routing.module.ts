@@ -13,27 +13,27 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {AuthenticationGuard} from './authentication-guard/authentication.guard';
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent},
-  {path: 'signal-generator', component: SignalGeneratorComponent},
-  {path: 'vfo', component: VfoComponent},
-  {path: 'transceiver', component: TransceiverComponent},
-  {path: 'log-book', component: LogBookComponent, canActivate: [AuthenticationGuard]},
-  {path: 'request-qsl', component: RequestQslComponent},
-  {path: 'qsl', component: QslComponent},
-  {
-    path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
-  },
-  {path: '**', component: PageNotFoundComponent}
+    {path: 'login', component: LoginComponent},
+    {path: 'signal-generator', component: SignalGeneratorComponent},
+    {path: 'vfo', component: VfoComponent},
+    {path: 'transceiver', component: TransceiverComponent},
+    {path: 'log-book', component: LogBookComponent, canActivate: [AuthenticationGuard]},
+    {path: 'request-qsl', component: RequestQslComponent},
+    {path: 'qsl', component: QslComponent},
+    {
+        path: '',
+        redirectTo: '/login',
+        pathMatch: 'full'
+    },
+    {path: '**', component: PageNotFoundComponent},
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forRoot(routes)
-  ],
-  exports: [RouterModule]
+    imports: [
+        CommonModule,
+        RouterModule.forRoot(routes)
+    ],
+    exports: [RouterModule]
 })
 
 export class AppRoutingModule {
