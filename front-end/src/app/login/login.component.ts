@@ -26,10 +26,7 @@ export class LoginComponent {
     }
 
     onSubmit() {
-        if (this.loggedIn) {
-            return;
-        }
-
+        if (this.loggedIn) return;
         this.logger.log('Logging in with an email ' + this.user.email);
 
         this.authenticationService.login(this.user.email, this.user.password)

@@ -12,7 +12,7 @@ import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
 import {User} from "../model/user";
 
 const users: User[] = [
-    {id: 1, email: 'a@a', password: 'pwd', token: ''},
+    {id: 1, email: 'mstoyanovca@gmail.com', password: 'password', token: ''},
     {id: 2, email: 'b@b', password: 'pwd', token: ''}
 ];
 
@@ -29,7 +29,7 @@ export class BackendInterceptor implements HttpInterceptor {
 
         function handleRoute() {
             switch (true) {
-                case url.endsWith('/user/login') && method === 'POST':
+                case url.endsWith('/login') && method === 'POST':
                     return login();
                 case url.endsWith('/users') && method === 'GET':
                     return getUsers();
