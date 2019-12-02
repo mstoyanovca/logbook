@@ -1,34 +1,24 @@
 package controller
 
-import auth.UserAction
 import dao.UserDao
 import javax.inject.Inject
 import model.User
+import play.api.libs.json.Json
 import play.api.mvc._
-import play.filters.csrf.CSRF.Token
-import play.filters.csrf.{CSRF, CSRFAddToken, CSRFCheck}
 
-class LoginController @Inject()(cc: ControllerComponents, userDao: UserDao, userAction: UserAction, addToken: CSRFAddToken,
-                                checkToken: CSRFCheck) extends AbstractController(cc) {
+class LoginController @Inject()(cc: ControllerComponents, userDao: UserDao) extends AbstractController(cc) {
 
-  def login: Action[AnyContent] = addToken(Action { implicit request =>
-    val user: User = request.body.asJson.get.as[User]
+  def login: Action[AnyContent] = Action { implicit request =>
+    val user = request.body.asJson.get.as[User]
     if (userDao.findUser(user)) {
-      val Token(name, value) = CSRF.getToken.get
-      Ok(s"$name=$value")
-      // Redirect(routes.HomeController.index())
-      // .withSession("email" -> user.email)
-      // .withCookies(Cookie("XSRF-TOKEN", createCSFRToken(user.email), httpOnly = false))
+      user.token = Some("token")
+      Ok(Json.toJson(user))
     } else {
       Redirect(routes.HomeController.index())
     }
-  })
-
-  def logout: Action[AnyContent] = userAction { implicit request: Request[AnyContent] =>
-    Redirect(routes.HomeController.index()).withNewSession
   }
 
-  private def createCSFRToken(str: String): String = {
-    "token"
+  def logout: Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    Redirect(routes.HomeController.index()).withNewSession
   }
 }

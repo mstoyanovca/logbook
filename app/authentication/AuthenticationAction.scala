@@ -1,4 +1,4 @@
-package auth
+package authentication
 
 import javax.inject.Inject
 import pdi.jwt._
