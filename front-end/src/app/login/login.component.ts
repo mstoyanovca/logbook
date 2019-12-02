@@ -6,7 +6,7 @@ import {NGXLogger} from 'ngx-logger';
 
 @Component({selector: 'app-login', templateUrl: './login.component.html', styleUrls: ['./login.component.css']})
 export class LoginComponent {
-    user = new User(0, '', '', '');
+    user = new User('', '', '');
     authenticationError = '';
     loggedIn: boolean;
 
@@ -16,13 +16,8 @@ export class LoginComponent {
     newPassword: string;
     newPasswordConfirm: string;
 
-    constructor(
-        private authenticationService: AuthenticationService,
-        private logger: NGXLogger) {
-
-        if (this.authenticationService.currentUserValue) {
-            this.loggedIn = true;
-        }
+    constructor(private authenticationService: AuthenticationService, private logger: NGXLogger) {
+        if (this.authenticationService.currentUserValue) this.loggedIn = true;
     }
 
     onSubmit() {

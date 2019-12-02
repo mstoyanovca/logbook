@@ -12,8 +12,9 @@ import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
 import {User} from "../model/user";
 
 const users: User[] = [
-    {id: 1, email: 'mstoyanovca@gmail.com', password: 'password', token: ''},
-    {id: 2, email: 'b@b', password: 'pwd', token: ''}
+    {email: 'mstoyanovca@gmail.com', password: 'password', token: ''},
+    {email: 'a@a', password: 'pwd', token: ''},
+    {email: 'b@b', password: 'pwd', token: ''}
 ];
 
 @Injectable()
@@ -40,10 +41,9 @@ export class BackendInterceptor implements HttpInterceptor {
 
         function login() {
             const {email, password} = body;
-            const user = users.find(x => x.email === email && x.password === password);
+            const user = users.find(user => user.email === email && user.password === password);
             if (!user) return error('Email or password is incorrect');
             return ok({
-                id: user.id,
                 email: user.email,
                 token: 'fake-jwt-token'
             })

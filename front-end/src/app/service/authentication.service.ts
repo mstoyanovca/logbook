@@ -23,12 +23,7 @@ export class AuthenticationService {
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    public get currentUserValue(): User {
-        return this.currentUserSubject.value;
-    }
-
     login(email: string, password: string) {
-        console.log("AuthenticationService login url = " + environment.apiUrl + "/login");
         return this.http.post<User>(environment.apiUrl + "/login", {email, password})
             .pipe(map(user => {
                 if (user && user.token) {
@@ -43,5 +38,9 @@ export class AuthenticationService {
     logout() {
         localStorage.removeItem('currentUser');
         this.currentUserSubject.next(null);
+    }
+
+    public get currentUserValue(): User {
+        return this.currentUserSubject.value;
     }
 }
