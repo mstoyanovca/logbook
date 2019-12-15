@@ -13,7 +13,7 @@ case class UserRequest[A](jwt: JwtClaim, token: String, request: Request[A]) ext
 class AuthenticationAction @Inject()(bodyParser: BodyParsers.Default,
                                      authenticationService: AuthenticationService)
                                     (implicit ec: ExecutionContext) extends ActionBuilder[UserRequest, AnyContent] {
-  private val headerTokenRegex = """Bearer (.+?)""".r
+  private final val headerTokenRegex = """Bearer (.+?)""".r
 
   override def parser: BodyParser[AnyContent] = bodyParser
 
