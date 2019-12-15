@@ -19,6 +19,7 @@ export class JwtInterceptor implements HttpInterceptor {
         console.log("isProtectedUrl = " + isProtectedUrl);
         if (isLoggedIn && isProtectedUrl) {
             console.log("JwtInterceptor2");
+            // noinspection JSObjectNullOrUndefined
             request = request.clone({
                 setHeaders: {
                     Authorization: 'Bearer ' + currentUser.token
