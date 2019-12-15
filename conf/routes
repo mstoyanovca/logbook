@@ -1,4 +1,2 @@
-GET         /             controller.HomeController.index()
 POST        /login        controller.LoginController.login()
-
-GET         /*file        controller.HomeController.assetOrDefault(file)
+GET         /qsos         controller.LoginController.qsos()
