@@ -16,7 +16,7 @@ const httpOptions = {
 })
 
 export class QsoService {
-  private qsosUrl = 'api/qsos';
+  private qsosUrl = 'qsos';
 
   constructor(
     private http: HttpClient,

@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {User} from "../model/user";
 import {environment} from '../../environments/environment';
 
-/*const httpOptions = {
+const httpOptions = {
     withCredentials: true,
     headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'my-auth-token'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json'
     })
-};*/
+};
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
@@ -24,13 +24,12 @@ export class AuthenticationService {
     }
 
     login(email: string, password: string) {
-        return this.http.post<User>(environment.apiUrl + "/login", {email, password})
+        return this.http.post<User>(environment.apiUrl + "/login", {email, password}, httpOptions)
             .pipe(map(user => {
                 if (user && user.token) {
                     localStorage.setItem('currentUser', JSON.stringify(user));
                     this.currentUserSubject.next(user);
                 }
-
                 return user;
             }));
     }

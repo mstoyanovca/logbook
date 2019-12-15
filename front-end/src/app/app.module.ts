@@ -16,7 +16,6 @@ import {LogBookComponent} from './log-book/log-book.component';
 import {RequestQslComponent} from './request-qsl/request-qsl.component';
 import {QslComponent} from './qsl/qsl.component';
 import {AppRoutingModule} from './app-routing.module';
-import {ErrorInterceptor} from './interceptor/error.interceptor';
 import {JwtInterceptor} from './interceptor/jwt.interceptor';
 import {environment} from '../environments/environment';
 
@@ -41,7 +40,6 @@ import {environment} from '../environments/environment';
         FormsModule,
         ReactiveFormsModule,
         NgbPaginationModule,
-        // HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {dataEncapsulation: false}),
         AngularFontAwesomeModule,
         AppRoutingModule,
         LoggerModule.forRoot({
@@ -50,9 +48,7 @@ import {environment} from '../environments/environment';
         })
     ],
     providers: [
-        {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-        {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-        // {provide: HTTP_INTERCEPTORS, useClass: BackendInterceptor, multi: true}
+        {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
     ],
     bootstrap: [AppComponent]
 })

@@ -35,7 +35,7 @@ describe('QsoService', () => {
       expect(response).toBe(QsoFactory.createQsos());
     });
 
-    const req = httpMock.expectOne('api/qsos');
+    const req = httpMock.expectOne('qsos');
     expect(req.request.method).toBe('GET');
   }));
 
@@ -44,7 +44,7 @@ describe('QsoService', () => {
       expect(response).toBe(QsoFactory.createQsos());
     });
 
-    const req = httpMock.expectOne('api/qsos?date=2019-12-15&time=22:00&callsign=LZ4MN');
+    const req = httpMock.expectOne('qsos?date=2019-12-15&time=22:00&callsign=LZ4MN');
     expect(req.request.method).toBe('GET');
   }));
 
@@ -53,7 +53,7 @@ describe('QsoService', () => {
       expect(response).toBe(qso);
     });
 
-    const req = httpMock.expectOne('api/qsos');
+    const req = httpMock.expectOne('qsos');
     expect(req.request.method).toBe('POST');
   }));
 
@@ -62,7 +62,7 @@ describe('QsoService', () => {
       expect(response).toBe(qso);
     });
 
-    const req = httpMock.expectOne('api/qsos/4');
+    const req = httpMock.expectOne('qsos/4');
     expect(req.request.method).toBe('DELETE');
   }));
 });
