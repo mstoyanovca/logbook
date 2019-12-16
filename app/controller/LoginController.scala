@@ -24,8 +24,4 @@ class LoginController @Inject()(cc: ControllerComponents,
       Unauthorized
     }
   }
-
-  def qsos: Action[AnyContent] = authAction { implicit request =>
-    Ok("")
-  }
 }

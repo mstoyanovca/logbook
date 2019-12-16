@@ -15,6 +15,7 @@ import scala.util.Try
 class AuthenticationService @Inject()(config: Configuration) {
   private final val issuer = config.get[String]("jwt.issuer")
   private final val audience = config.get[String]("jwt.audience")
+  private final val expiration = config.get[String]("jwt.expiration").toLong
   private final val secretKey = config.get[String]("jwt.secretKey")
   private final val algorithm = HS256
 
@@ -27,7 +28,7 @@ class AuthenticationService @Inject()(config: Configuration) {
         .by(issuer)
         .about(user.email)
         .to(audience)
-        .expiresIn(7 * 24 * 60 * 60)
+        .expiresIn(expiration)
         .startsNow
         .issuedNow
         .withId(UUID.randomUUID().toString)
@@ -37,8 +38,8 @@ class AuthenticationService @Inject()(config: Configuration) {
   }
 
   def validateJwt(token: String): Try[JwtClaim] = for {
-    claims <- Try(JwtJson.parseClaim(splitToken(token)._2)) if claims.isValid(issuer)
-  } yield claims
+    claim <- Try(JwtJson.parseClaim(splitToken(token)._2)) if claim.isValid(issuer)
+  } yield claim
 
   private def splitToken(token: String): (String, String, String) = {
     val parts = token.split("\\.")
@@ -46,7 +47,7 @@ class AuthenticationService @Inject()(config: Configuration) {
     val signature = parts.length match {
       case 2 => ""
       case 3 => parts(2)
-      case _ => throw new JwtLengthException(s"Expected token [$token] to be composed of 2 or 3 parts separated by dots.")
+      case _ => throw new JwtLengthException(s"Expected token [$token] to be composed of 2 or 3 parts separated by dots")
     }
 
     (JwtBase64.decodeString(parts(0)), JwtBase64.decodeString(parts(1)), signature)

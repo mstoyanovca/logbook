@@ -1,2 +1,2 @@
 POST        /login        controller.LoginController.login()
-GET         /qsos         controller.LoginController.qsos()
+GET         /qso          controller.QsoController.qso()
