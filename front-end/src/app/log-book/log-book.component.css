@@ -19,17 +19,3 @@ h6 {
 #accordion-row:hover {
   background-color: lightgray !important;
 }
-
-/*phones:*/
-@media (max-width: 767.98px) {
-  label.gap-top {
-    margin-top: 15px;
-  }
-}
-
-/*tablets:*/
-@media (min-width: 768px) and (max-width: 991.98px) {
-  label.gap-top, div.gap-top {
-    margin-top: 15px;
-  }
-}

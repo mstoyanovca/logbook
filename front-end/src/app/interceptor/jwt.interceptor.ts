@@ -10,15 +10,10 @@ export class JwtInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log("JwtInterceptor1");
         const currentUser = this.authenticationService.currentUserValue;
         const isLoggedIn = currentUser !== null && currentUser.token !== null;
-        console.log("isLoggedIn = " + isLoggedIn);
-        console.log("request.url = " + request.url);
         const isProtectedUrl = request.url.includes(environment.protectedUrl);
-        console.log("isProtectedUrl = " + isProtectedUrl);
         if (isLoggedIn && isProtectedUrl) {
-            console.log("JwtInterceptor2");
             // noinspection JSObjectNullOrUndefined
             request = request.clone({
                 setHeaders: {

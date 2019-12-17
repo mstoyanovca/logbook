@@ -38,9 +38,9 @@
       <!-- Log book accordion heading: -->
       <div class="row m-0" style="border-top: 1px solid lightgray;" id="accordionHeader">
         <div class="col-md-3 col-4 px-1 py-2" ><h6>Date</h6></div>
-        <div class="col-md-2 col-4 px-1 py-2"><h6>Time</h6></div>
-        <div class="col-md-2 col-4 px-1 py-2 sortable" (click)="sortByCallsign()"><img src="{{callsignImagePath}}" *ngIf="callsignImagePath != ''"><h6>Callsign</h6></div>
-        <div class="col-md-2 px-1 py-2 d-none d-md-block sortable" (click)="sortByBand()"><img src="{{bandImagePath}}" *ngIf="bandImagePath != ''"><h6>Band</h6></div>
+        <div class="col-md-3 col-4 px-1 py-2"><h6>Time</h6></div>
+        <div class="col-md-3 col-4 px-1 py-2 sortable" (click)="sortByCallsign()"><img src="{{callsignImagePath}}" *ngIf="callsignImagePath != ''"><h6>Callsign</h6></div>
+        <div class="col-md-2 px-1 py-2 d-none d-md-block sortable" (click)="sortByFrequency()"><img src="{{frequencyImagePath}}" *ngIf="frequencyImagePath != ''"><h6>Frequency</h6></div>
         <div class="col-md-1 px-1 py-2 d-none d-md-block"><h6>RST</h6></div>
       </div>
       <!-- Log book accordion: -->
@@ -52,27 +52,19 @@
               <div class="col-md-2 col-4 p-1" *ngIf="qso.time.minute!==0">{{qso.time.hour}}:{{qso.time.minute}}</div>
               <div class="col-md-2 col-4 p-1" *ngIf="qso.time.minute===0">{{qso.time.hour}}:00</div>
               <div class="col-md-2 col-4 p-1" >{{qso.callsign}}</div>
-              <div class="col-md-2 d-none d-md-block p-1">{{qso.band}}</div>
+              <div class="col-md-2 d-none d-md-block p-1">{{qso.frequency}}</div>
               <div class="col-md-1 d-none d-md-block p-1">{{qso.rst}}</div>
             </div>
           </div>
           <div id="{{'collapse'+i}}" class="collapse" data-parent="#accordion">
             <div class="card-body p-0">
               <div class="row d-md-none m-0">
-                <div class="col-3 p-1">Band:</div>
-                <div class="col-9 p-1">{{qso.band}}</div>
+                <div class="col-3 p-1">Frequency:</div>
+                <div class="col-9 p-1">{{qso.frequency}}</div>
               </div>
               <div class="row d-md-none m-0">
                 <div class="col-3 p-1">RST:</div>
                 <div class="col-9 p-1">{{qso.rst}}</div>
-              </div>
-              <div class="row m-0">
-                <div class="col-3 p-1">Name:</div>
-                <div class="col-9 p-1">{{qso.name}}</div>
-              </div>
-              <div class="row m-0">
-                <div class="col-3 p-1">QTH:</div>
-                <div class="col-9 p-1">{{qso.qth}}</div>
               </div>
               <div class="row m-0">
                 <div class="col-3 p-1">Notes:</div>
@@ -115,46 +107,34 @@
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2" for="callsign">Callsign</label>
           <div class="input-group col-lg-2 col-md-10">
-            <input type="text" class="form-control" id="callsign" name="callsign" [(ngModel)]="newQso.callsign" #callsign="ngModel" placeholder="Callsign" required pattern="[A-Z]{2}\d{1}[A-Z]{2,3}">
+            <input type="text" class="form-control" id="callsign" name="callsign" [(ngModel)]="newQso.callsign" #callsign="ngModel" required>
           </div>
-          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="name">Name</label>
-          <div class="input-group col-lg-2 col-md-10 gap-top">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Name" [(ngModel)]="newQso.name" maxlength="48">
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="frequency">Frequency</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="frequency" name="frequency" [(ngModel)]="newQso.frequency" #frequency="ngModel" required>
           </div>
-          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="qth">QTH</label>
-          <div class="input-group col-lg-2 col-md-10 gap-top">
-            <input type="text" class="form-control" id="qth" name="qth" placeholder="QTH" [(ngModel)]="newQso.qth" maxlength="48">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="form-text text-danger col-lg-4 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.errors?.required">Callsign is required</div>
-          <div class="form-text text-danger col-lg-4 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&!callsign.errors?.required&&callsign.invalid">Callsign is invalid</div>
-        </div>
-        <div class="form-group row">
-          <label class="col-form-label col-lg-1 col-md-2" for="band">Band</label>
-          <div class="input-group col-lg-2 col-md-10">
-            <select class="form-control" id="band" name="band" [(ngModel)]="newQso.band">
-              <option>30m</option>
-              <option>2m</option>
-              <option>70cm</option>
-            </select>
-          </div>
-          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="mode">Mode</label>
-          <div class="input-group col-lg-2 col-md-10 gap-top">
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="mode">Mode</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
             <select class="form-control" id="mode" name="mode" [(ngModel)]="newQso.mode">
-              <option>CW</option>
               <option>SSB</option>
+              <option>CW</option>
               <option>FM</option>
             </select>
           </div>
-          <label class="col-form-label col-lg-1 col-md-2 gap-top" for="rst">RST</label>
-          <div class="input-group col-lg-2 col-md-10 gap-top">
-            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rst" #rst="ngModel" required pattern="[1-5][1-9][1-9]">
+        </div>
+        <div class="form-group row">
+          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid">Callsign is required</div>
+          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid&&frequency.invalid">Frequency is required</div>
+          <div class="form-text text-danger col-lg-2 offset-lg-4 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.valid&&frequency.invalid">Frequency is required</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rst">RST</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rst" #rst="ngModel" required>
           </div>
         </div>
         <div class="form-group row">
-          <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rst.errors?.required">RST is required</div>
-          <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&!rst.errors?.required&&rst.invalid">RST is invalid</div>
+          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rst.errors?.required">RST is required</div>
         </div>
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2" for="notes">Notes</label>

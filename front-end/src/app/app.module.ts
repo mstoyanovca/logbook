@@ -18,6 +18,7 @@ import {QslComponent} from './qsl/qsl.component';
 import {AppRoutingModule} from './app-routing.module';
 import {JwtInterceptor} from './interceptor/jwt.interceptor';
 import {environment} from '../environments/environment';
+import {ErrorInterceptor} from "./interceptor/error.interceptor";
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import {environment} from '../environments/environment';
         })
     ],
     providers: [
-        {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+        {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     ],
     bootstrap: [AppComponent]
 })
