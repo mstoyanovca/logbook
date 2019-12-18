@@ -16,8 +16,6 @@ libraryDependencies ++= Seq(
   ws,
   specs2 % Test,
   guice,
-  "com.pauldijou" %% "jwt-core" % "4.2.0",
-  "com.pauldijou" %% "jwt-play" % "4.2.0",
-  "com.auth0" % "jwks-rsa" % "0.9.0")
+  "com.pauldijou" %% "jwt-play" % "4.2.0")
 
 unmanagedResourceDirectories in Test += baseDirectory(_ / "target/web/public/test").value

@@ -3,16 +3,14 @@ import {QsoService} from './qso-service';
 import {QsoFactory} from './qso-factory';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {LoggerConfig, NGXLogger, NGXLoggerHttpService, NGXLoggerHttpServiceMock} from 'ngx-logger';
-import {QsoDate} from '../model/qso-date';
-import {QsoTime} from '../model/qso-time';
 import {QSO} from '../model/qso';
 
 describe('QsoService', () => {
     let service: QsoService;
     let httpMock: HttpTestingController;
 
-    const date = new QsoDate(2019, 12, 15);
-    const time = new QsoTime(22, 0);
+    const date = new Date(2019, 12, 15);
+    const time = new Date(0, 0, 0, 22, 0);
     const qso = new QSO(4, 'LZ4MN', date, time, '28.800', 'FM', '588', 'Dipole');
 
     beforeEach(() => {

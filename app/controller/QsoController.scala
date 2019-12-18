@@ -11,8 +11,6 @@ class QsoController @Inject()(cc: ControllerComponents,
                               qsoDao: QsoDao) extends AbstractController(cc) {
 
   def qso: Action[AnyContent] = authAction { implicit authenticationRequest =>
-    val request = authenticationRequest.request
-    val claim = authenticationRequest.claim
     Ok(Json.toJson(qsoDao.findAll()))
       .as("application/json")
       .withHeaders("Connection" -> "keep-alive")

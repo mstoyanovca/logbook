@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {QSO} from '../model/qso';
 import {Direction} from '../model/direction';
 import {QsoService} from '../service/qso-service';
-import {QsoDate} from '../model/qso-date';
-import {QsoTime} from '../model/qso-time';
 
 @Component({
     selector: 'app-log-book',
@@ -39,8 +37,8 @@ export class LogBookComponent implements OnInit {
         this.newQso = new QSO(
             0,
             '',
-            new QsoDate(date.getFullYear(), date.getMonth() + 1, date.getDate()),
-            new QsoTime(date.getHours(), date.getMinutes()),
+            new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
+            new Date(0, 0, 0, date.getHours(), date.getMinutes()),
             '',
             'SSB',
             '',
@@ -85,19 +83,19 @@ export class LogBookComponent implements OnInit {
     }
 
     compareDate = (qso1: QSO, qso2: QSO): number => {
-        if (qso1.date.year !== qso2.date.year) {
-            return qso1.date.year - qso2.date.year;
-        } else if (qso1.date.month !== qso2.date.month) {
-            return qso1.date.month - qso2.date.month;
+        if (qso1.date.getFullYear() !== qso2.date.getFullYear()) {
+            return qso1.date.getFullYear() - qso2.date.getFullYear();
+        } else if (qso1.date.getMonth() !== qso2.date.getMonth()) {
+            return qso1.date.getMonth() - qso2.date.getMonth();
         } else {
-            return qso1.date.day - qso2.date.day;
+            return qso1.date.getDay() - qso2.date.getDay();
         }
     };
 
     compareTime = (qso1: QSO, qso2: QSO): number => {
         const datesDiff = this.compareDate(qso1, qso2);
         if (datesDiff === 0) {
-            return qso1.time.hour !== qso2.time.hour ? qso1.time.hour - qso2.time.hour : qso1.time.minute - qso2.time.minute;
+            return qso1.time.getHours() !== qso2.time.getHours() ? qso1.time.getHours() - qso2.time.getHours() : qso1.time.getMinutes() - qso2.time.getMinutes();
         } else {
             return datesDiff;
         }
@@ -153,8 +151,8 @@ export class LogBookComponent implements OnInit {
 
     private filterData = (): void => {
         this.qsos = this.qsosFromDB.filter(qso =>
-            (qso.date.year + '-' + qso.date.month + '-' + qso.date.day).indexOf(this.filter) > -1 ||
-            (qso.time.hour + ':' + qso.time.minute).indexOf(this.filter) > -1 ||
+            (qso.date.getFullYear() + '-' + qso.date.getMonth() + '-' + qso.date.getDay()).indexOf(this.filter) > -1 ||
+            (qso.time.getHours() + ':' + qso.time.getMinutes()).indexOf(this.filter) > -1 ||
             qso.callsign.indexOf(this.filter.toUpperCase()) > -1 ||
             qso.frequency.toLowerCase().indexOf(this.filter) > -1);
         this.collectionSize = this.qsos.length;

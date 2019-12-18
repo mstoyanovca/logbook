@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {QSO} from '../model/qso';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {catchError, tap} from 'rxjs/operators';
-import {QsoDate} from '../model/qso-date';
-import {QsoTime} from '../model/qso-time';
+import {catchError, map, tap} from 'rxjs/operators';
 import {NGXLogger} from 'ngx-logger';
 
 const httpOptions = {
@@ -25,12 +23,18 @@ export class QsoService {
 
     findAll(): Observable<QSO[]> {
         return this.http.get<QSO[]>(this.qsosUrl).pipe(
-            tap(_ => this.logger.log('findAll()')),
-            catchError(this.handleError('findAll', []))
-        );
+            map(response => {
+                response.forEach(r => {
+                    r.date = new Date(r.date);
+                    r.time = new Date('1970-01-01T' + r.time + '.000Z');
+                });
+                return response;
+            })
+        )
+        // tap(_ => this.logger.log('findAll()')), catchError(this.handleError('findAll', [])))
     }
 
-    findByDateTimeAndCallsign(date: QsoDate, time: QsoTime, callsign: string): Observable<QSO[]> {
+    findByDateTimeAndCallsign(date: Date, time: Date, callsign: string): Observable<QSO[]> {
         const url = `${this.qsosUrl}?date=${date}&time=${time}&callsign=${callsign}`;
 
         return this.http.get<QSO[]>(url).pipe(

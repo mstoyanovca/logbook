@@ -5,19 +5,17 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {NgbDatepickerModule, NgbPaginationModule, NgbTimepickerModule} from '@ng-bootstrap/ng-bootstrap';
 import {LoggerConfig, NGXLogger, NGXLoggerHttpService, NGXLoggerHttpServiceMock} from 'ngx-logger';
 import {By} from '@angular/platform-browser';
-import {QsoDate} from '../model/qso-date';
-import {QsoTime} from '../model/qso-time';
 import {QSO} from '../model/qso';
 
 describe('LogBookComponent', () => {
     let component: LogBookComponent;
     let fixture: ComponentFixture<LogBookComponent>;
 
-    const date1 = new QsoDate(2019, 12, 15);
-    const date2 = new QsoDate(2019, 12, 16);
+    const date1 = new Date(2019, 12, 15);
+    const date2 = new Date(2019, 12, 16);
 
-    const time1 = new QsoTime(22, 0);
-    const time2 = new QsoTime(20, 52);
+    const time1 = new Date(0, 0, 0, 22, 0);
+    const time2 = new Date(0, 0, 0, 20, 52);
 
     const qso1 = new QSO(2, 'LZ1KVY', date1, time1, '3.564', 'SSB', '588', 'Dipole');
     const qso2 = new QSO(3, 'LZ2KVV', date2, time2, '446.100', 'FM', '599', '5W');
@@ -71,6 +69,7 @@ describe('LogBookComponent', () => {
         expect(component.compareTime(qso1, qso2)).toBeLessThan(0);
     });
 
+    // TODO turn into frequency:
     /*it('should compare bands ascending', () => {
         expect(component.compareBandAsc(qso1, qso2)).toBeLessThan(0);
     });
