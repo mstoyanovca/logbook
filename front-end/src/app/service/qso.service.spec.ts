@@ -11,7 +11,7 @@ describe('QsoService', () => {
 
     const date = new Date(2019, 12, 15);
     const time = new Date(0, 0, 0, 22, 0);
-    const qso = new QSO(4, 'LZ4MN', date, time, '28.800', 'FM', '588', 'Dipole');
+    const qso = new QSO(4, date, time, 'LZ4MN', '28.800', 'FM', '588', 'Dipole');
 
     beforeEach(() => {
         TestBed.configureTestingModule({

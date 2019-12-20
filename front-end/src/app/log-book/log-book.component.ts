@@ -40,7 +40,7 @@ export class LogBookComponent implements OnInit {
             new Date(0, 0, 0, date.getHours(), date.getMinutes()),
             '',
             '',
-            '',
+            'SSB',
             '');
 
         this.findAll();
