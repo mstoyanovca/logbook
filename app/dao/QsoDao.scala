@@ -9,13 +9,13 @@ import model.Qso
 class QsoDao @Inject()() {
   def findAll(): Seq[Qso] = {
     var qsos = Seq(
-      Qso(1, "LZ2KVA", LocalDate.of(2019, 12, 15), LocalTime.of(22, 0), "144.000", "FM", "599", "5W"),
-      Qso(2, "LZ1KVY", LocalDate.of(2019, 12, 16), LocalTime.of(22, 52), "462.100", "FM", "588", "5W"),
-      Qso(3, "LZ2KVV", LocalDate.of(2018, 12, 1), LocalTime.of(21, 40), "3.564", "SSB", "466", "Dipole"),
-      Qso(4, "LZ4MN", LocalDate.of(2016, 12, 15), LocalTime.of(22, 51), "28.800", "FM", "598", "Dipole")
+      Qso(Some(1L), Some(1L), LocalDate.of(2019, 12, 15), LocalTime.of(22, 0), "LZ2AB", "144.000", "FM", "Jivko", Some("Balchik"), Some(100), Some("59+"), Some("58"), Some("HT")),
+      Qso(Some(2L), Some(1L), LocalDate.of(2019, 12, 16), LocalTime.of(22, 52), "LZ1CD", "14.085", "CW", "Ivan", Some("Karlovo"), Some(20), Some("588"), Some("46"), Some("Vetical")),
+      Qso(Some(3L), Some(1L), LocalDate.of(2018, 12, 1), LocalTime.of(21, 40), "LZ2EF", "3.564", "SSB", "Miro", Some("Sofia"), Some(50), Some("466"), Some("59"), Some("Ground Plane")),
+      Qso(Some(1L), Some(1L), LocalDate.of(2016, 12, 15), LocalTime.of(2, 51), "LZ4MN", "28.800", "FT8", "Kiro", Some("Turnovo"), Some(200), Some("598"), Some("59"), Some("JPole"))
     )
     for (i <- 0 to 20) {
-      qsos = qsos :+ Qso(i + 5, "LZ2KVZ", LocalDate.of(2018, 12, i + 1), LocalTime.of(21, 20 + i), "7.150", "SSB", "599", "Dipole")
+      qsos = qsos :+ Qso(Some(5 + i), Some(1L), LocalDate.of(2018, 12, i + 1), LocalTime.of(21, 20 + i), "LZ2KVV", "7.150", "SSB", "Ivan", Some("Varna"), Some(100), Some("59"), Some("48"), Some("Dipole"))
     }
     qsos
   }
