@@ -27,7 +27,7 @@ export class LogBookComponent implements OnInit {
     pageSize = 10;
     collectionSize = 0;
 
-    qsoToDelete = new QSO(0, '', null, null, '', '', '', '');
+    qsoToDelete = new QSO(0, null, null, '', '', '', '', '');
 
     constructor(private qsoService: QsoService) {
     }
@@ -36,11 +36,10 @@ export class LogBookComponent implements OnInit {
         const date = new Date();
         this.newQso = new QSO(
             0,
-            '',
             new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
             new Date(0, 0, 0, date.getHours(), date.getMinutes()),
             '',
-            'SSB',
+            '',
             '',
             '');
 
@@ -154,7 +153,7 @@ export class LogBookComponent implements OnInit {
             (qso.date.getFullYear() + '-' + qso.date.getMonth() + '-' + qso.date.getDay()).indexOf(this.filter) > -1 ||
             (qso.time.getHours() + ':' + qso.time.getMinutes()).indexOf(this.filter) > -1 ||
             qso.callsign.indexOf(this.filter.toUpperCase()) > -1 ||
-            qso.frequency.toLowerCase().indexOf(this.filter) > -1);
+            qso.frequency.toString().toLowerCase().indexOf(this.filter) > -1);
         this.collectionSize = this.qsos.length;
     };
 

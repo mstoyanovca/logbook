@@ -19,7 +19,7 @@ export class QslComponent implements OnInit {
     ngOnInit() {
         const date = new Date(2019, 12, 15, 22, 0);
         const time: Date = new Date(22, 0);
-        this.qso = new QSO(2, 'LZ1KVY', date, time, '3.564', 'SSB', '588', 'Ivan');
+        this.qso = new QSO(2,  date, time, 'LZ1KVY','3.564', 'SSB', 'Ivan', 'Varna');
     }
 
     download() {

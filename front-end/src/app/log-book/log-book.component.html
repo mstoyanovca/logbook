@@ -37,38 +37,68 @@
       </form>
       <!-- Log book accordion heading: -->
       <div class="row m-0" style="border-top: 1px solid lightgray;" id="accordionHeader">
-        <div class="col-md-3 col-4 px-1 py-2" ><h6>Date</h6></div>
-        <div class="col-md-3 col-4 px-1 py-2"><h6>Time</h6></div>
-        <div class="col-md-3 col-4 px-1 py-2 sortable" (click)="sortByCallsign()"><img src="{{callsignImagePath}}" *ngIf="callsignImagePath != ''"><h6>Callsign</h6></div>
-        <div class="col-md-2 px-1 py-2 d-none d-md-block sortable" (click)="sortByFrequency()"><img src="{{frequencyImagePath}}" *ngIf="frequencyImagePath != ''"><h6>Frequency</h6></div>
-        <div class="col-md-1 px-1 py-2 d-none d-md-block"><h6>RST</h6></div>
+        <div class="col-md-2 col-4 px-1 py-2" ><h6>Date</h6></div>
+        <div class="col-md-2 col-4 px-1 py-2"><h6>Time</h6></div>
+        <div class="col-md-2 col-4 px-1 py-2 sortable" (click)="sortByCallsign()"><img src="{{callsignImagePath}}" *ngIf="callsignImagePath != ''"><h6>Callsign</h6></div>
+        <div class="col-md-2 px-1 py-2 d-none d-md-block sortable" (click)="sortByFrequency()"><img src="{{frequencyImagePath}}" *ngIf="frequencyImagePath != ''"><h6>Freq</h6></div>
+        <div class="col-md-2 px-1 py-2 d-none d-md-block"><h6>Mode</h6></div>
+        <div class="col-md-2 px-1 py-2 d-none d-md-block"><h6>Name</h6></div>
       </div>
       <!-- Log book accordion: -->
       <div class="accordion mb-2" id="accordion">
         <div class="card" *ngFor="let qso of qsos | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; index as i; even as even;">
           <div class="card-header p-0" data-toggle="collapse" [attr.data-target]="'#collapse'+i">
             <div class="row m-0 sortable" id="accordion-row" [ngStyle]="{'background-color': even ? 'white' : ''}">
-              <div class="col-md-3 col-4 p-1">{{qso.date | date :'mediumDate' :'GMT'}}</div>
-              <div class="col-md-3 col-4 p-1">{{qso.time | date : 'shortTime' : 'GMT'}}</div>
-              <div class="col-md-3 col-4 p-1" >{{qso.callsign}}</div>
+              <div class="col-md-2 col-4 p-1">{{qso.date | date :'mediumDate' :'GMT'}}</div>
+              <div class="col-md-2 col-4 p-1">{{qso.time | date : 'shortTime' : 'GMT'}}</div>
+              <div class="col-md-2 col-4 p-1" >{{qso.callsign}}</div>
               <div class="col-md-2 d-none d-md-block p-1">{{qso.frequency}}</div>
-              <div class="col-md-1 d-none d-md-block p-1">{{qso.rst}}</div>
+              <div class="col-md-2 d-none d-md-block p-1">{{qso.mode}}</div>
+              <div class="col-md-2 d-none d-md-block p-1">{{qso.name}}</div>
             </div>
           </div>
           <div id="{{'collapse'+i}}" class="collapse" data-parent="#accordion">
             <div class="card-body p-0">
+              <div class="row d-sm-none d-md-flex none m-0">
+                <div class="col-2 p-1"><b>RST sent:</b></div>
+                <div class="col-2 p-1">{{qso.rstSent}}</div>
+                <div class="col-2 p-1"><b>RST rec:</b></div>
+                <div class="col-2 p-1">{{qso.rstReceived}}</div>
+                <div class="col-2 p-1"><b>Pwr:</b></div>
+                <div class="col-2 p-1">{{qso.power}}</div>
+              </div>
+
               <div class="row d-md-none m-0">
-                <div class="col-3 p-1">Frequency:</div>
-                <div class="col-9 p-1">{{qso.frequency}}</div>
+                <div class="col-4 p-1"><b>Freq:</b></div>
+                <div class="col-8 p-1">{{qso.frequency}}</div>
               </div>
               <div class="row d-md-none m-0">
-                <div class="col-3 p-1">RST:</div>
-                <div class="col-9 p-1">{{qso.rst}}</div>
+                <div class="col-4 p-1"><b>Mode:</b></div>
+                <div class="col-8 p-1">{{qso.mode}}</div>
+              </div>
+              <div class="row d-md-none m-0">
+                <div class="col-4 p-1"><b>Name:</b></div>
+                <div class="col-8 p-1">{{qso.name}}</div>
+              </div>
+
+              <div class="row d-sm-flex d-md-none none m-0">
+                <div class="col-4 p-1"><b>RST sent:</b></div>
+                <div class="col-8 p-1">{{qso.rstSent}}</div>
+                <div class="col-4 p-1"><b>RST rec:</b></div>
+                <div class="col-8 p-1">{{qso.rstReceived}}</div>
+                <div class="col-4 p-1"><b>Pwr:</b></div>
+                <div class="col-8 p-1">{{qso.power}}</div>
+              </div>
+
+              <div class="row m-0">
+                <div class="col-4 col-md-2 p-1"><b>QTH:</b></div>
+                <div class="col-8 col-md-10 p-1">{{qso.qth}}</div>
               </div>
               <div class="row m-0">
-                <div class="col-3 p-1">Notes:</div>
-                <div class="col-9 p-1">{{qso.notes}}</div>
+                <div class="col-4 col-md-2 p-1"><b>Notes:</b></div>
+                <div class="col-8 col-md-10 p-1">{{qso.notes}}</div>
               </div>
+
               <div class="row m-0">
                 <div class="col-2 offset-10 p-1">
                   <button type="button" class="btn btn-danger btn-sm float-right" data-toggle="modal" data-target="#deleteQsoModal" (click)="setQsoToDelete(qso)"><i class="fa fa-close"></i></button>
@@ -129,7 +159,7 @@
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rst">RST</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rst" #rst="ngModel" required>
+            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rstSent" #rst="ngModel" required>
           </div>
         </div>
         <div class="form-group row">

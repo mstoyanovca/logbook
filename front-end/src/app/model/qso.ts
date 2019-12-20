@@ -1,11 +1,16 @@
 export class QSO {
     constructor(public id: number,
-                public callsign: string,
                 public date: Date,
                 public time: Date,
+                public callsign: string,
                 public frequency: string,
                 public mode: string,
-                public rst: string,
-                public notes: string) {
+                public name: string,
+
+                public qth?: string,
+                public power?: number,
+                public rstSent?: number,
+                public rstReceived?: number,
+                public notes?: string) {
     }
 }
