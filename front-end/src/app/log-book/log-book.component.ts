@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {QSO} from '../model/qso';
 import {Direction} from '../model/direction';
 import {QsoService} from '../service/qso-service';
+import {QsoDate} from "../model/qso-date";
+import {QsoTime} from "../model/qso-time";
 
 @Component({
     selector: 'app-log-book',
@@ -11,6 +13,8 @@ import {QsoService} from '../service/qso-service';
 
 export class LogBookComponent implements OnInit {
     newQso: QSO;
+    qsoDate: QsoDate;
+    qsoTime: QsoTime;
     qsosFromDB: QSO[] = [];
     qsos: QSO[] = [];
 
@@ -27,21 +31,27 @@ export class LogBookComponent implements OnInit {
     pageSize = 10;
     collectionSize = 0;
 
-    qsoToDelete = new QSO(0, null, null, '', '', '', '', '');
+    qsoToDelete = new QSO(null, null, '', '', '', null);
 
     constructor(private qsoService: QsoService) {
     }
 
     ngOnInit() {
         const date = new Date();
+        this.qsoDate = {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()
+        };
+        this.qsoTime = {hour: date.getHours(), minute: date.getMinutes()};
+
         this.newQso = new QSO(
-            0,
-            new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
-            new Date(0, 0, 0, date.getHours(), date.getMinutes()),
+            null,
+            null,
             '',
             '',
             'SSB',
-            '');
+            null);
 
         this.findAll();
     }
@@ -55,6 +65,8 @@ export class LogBookComponent implements OnInit {
     }
 
     private add(qso: QSO): void {
+        qso.date = new Date(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day);
+        qso.time = new Date(0, 0, 0, this.qsoTime.hour, this.qsoTime.minute);
         this.qsoService.add(qso).subscribe(result => {
             this.qsosFromDB.push(result);
             this.qsos = this.qsosFromDB.sort(this.compareDate).sort(this.compareTime);

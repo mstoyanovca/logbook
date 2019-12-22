@@ -117,17 +117,19 @@
         <div class="form-group row d-flex align-items-center">
           <label class="col-form-label col-lg-1 col-md-2" for="date">Date</label>
           <div class="input-group col-lg-5 col-md-10">
-            <input class="form-control" id="date" name="date" [(ngModel)]="newQso.date" #date="ngModel" ngbDatepicker #d="ngbDatepicker" placeholder="yyyy-mm-dd" required>
+            <input class="form-control" id="date" name="date" [(ngModel)]="qsoDate" #date="ngModel" ngbDatepicker #d="ngbDatepicker" placeholder="yyyy-mm-dd" required>
             <div class="input-group-append">
               <button class="btn btn-outline-secondary calendar" type="button" (click)="d.toggle()"></button>
             </div>
           </div>
+          <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.invalid">Date is required</div>
           <label class="col-form-label col-lg-1 col-md-2" for="time">UTC</label>
           <div class="input-group col-lg-4 col-md-10">
-            <ngb-timepicker id="time" name="time" [(ngModel)]="newQso.time" #time="ngModel" required></ngb-timepicker>
+            <ngb-timepicker id="time" name="time" [(ngModel)]="qsoTime" #time="ngModel" required></ngb-timepicker>
           </div>
+          <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&time.invalid">Time is required</div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row d-none d-lg-flex">
           <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.invalid">Date is required</div>
           <!-- Properly position the error message: -->
           <div class="form-text text-danger col-lg-2 offset-lg-7 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&date.valid&&time.invalid">Time is required</div>
@@ -138,10 +140,12 @@
           <div class="input-group col-lg-2 col-md-10">
             <input type="text" class="form-control" id="callsign" name="callsign" [(ngModel)]="newQso.callsign" #callsign="ngModel" required>
           </div>
+          <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid">Callsign is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="frequency">Frequency</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
             <input type="text" class="form-control" id="frequency" name="frequency" [(ngModel)]="newQso.frequency" #frequency="ngModel" required>
           </div>
+          <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&frequency.invalid">Frequency is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="mode">Mode</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
             <select class="form-control" id="mode" name="mode" [(ngModel)]="newQso.mode">
@@ -151,19 +155,38 @@
             </select>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row d-none d-lg-flex">
           <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid">Callsign is required</div>
           <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid&&frequency.invalid">Frequency is required</div>
           <div class="form-text text-danger col-lg-2 offset-lg-4 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.valid&&frequency.invalid">Frequency is required</div>
         </div>
         <div class="form-group row">
-          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rst">RST</label>
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstsent">RST sent</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="rst" name="rst" placeholder="599" [(ngModel)]="newQso.rstSent" #rst="ngModel" required>
+            <input type="text" class="form-control" id="rstsent" name="rstsent" placeholder="599" [(ngModel)]="newQso.rstSent" #rstsent="ngModel" required>
+          </div>
+          <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rstsent.invalid">RST is required</div>
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstrec">RST rcv</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="rstrec" name="rstrec" placeholder="599" [(ngModel)]="newQso.rstReceived" #rst="ngModel">
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="power">Power</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="power" name="power" placeholder="100W" [(ngModel)]="newQso.power" #power="ngModel">
           </div>
         </div>
+        <div class="form-group row d-none d-lg-flex">
+          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rstsent.invalid">RST is required</div>
+        </div>
         <div class="form-group row">
-          <div class="form-text text-danger col-lg-2 offset-lg-1 offset-md-2" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rst.errors?.required">RST is required</div>
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="name">Name</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="newQso.name" #name="ngModel">
+          </div>
+          <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="qth">QTH</label>
+          <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
+            <input type="text" class="form-control" id="qth" name="qth" [(ngModel)]="newQso.qth" #qth="ngModel">
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2" for="notes">Notes</label>
