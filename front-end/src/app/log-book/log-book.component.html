@@ -62,7 +62,7 @@
               <div class="row d-none d-md-flex none m-0">
                 <div class="col-2 p-1"><b>RST sent:</b></div>
                 <div class="col-2 p-1">{{qso.rstSent}}</div>
-                <div class="col-2 p-1"><b>RST rec:</b></div>
+                <div class="col-2 p-1"><b>RST rcv:</b></div>
                 <div class="col-2 p-1">{{qso.rstReceived}}</div>
                 <div class="col-2 p-1"><b>Pwr:</b></div>
                 <div class="col-2 p-1">{{qso.power}}</div>
@@ -163,12 +163,12 @@
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstsent">RST sent</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="rstsent" name="rstsent" placeholder="599" [(ngModel)]="newQso.rstSent" #rstsent="ngModel" required>
+            <input type="text" class="form-control" id="rstsent" name="rstsent" placeholder="59" [(ngModel)]="newQso.rstSent" #rstsent="ngModel" required>
           </div>
           <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rstsent.invalid">RST is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstrec">RST rcv</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="rstrec" name="rstrec" placeholder="599" [(ngModel)]="newQso.rstReceived" #rst="ngModel">
+            <input type="text" class="form-control" id="rstrec" name="rstrec" placeholder="59" [(ngModel)]="newQso.rstReceived" #rst="ngModel">
           </div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="power">Power</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">

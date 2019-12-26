@@ -11,7 +11,7 @@ import {NGXLogger} from 'ngx-logger';
 })
 
 export class RequestQslComponent implements OnInit {
-    qso = new QSO(0, null, null, '', '', '', '', '');
+    qso = new QSO(null, null, '', '', '', '');
 
     constructor(
         private qsoService: QsoService,
