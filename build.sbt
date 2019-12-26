@@ -6,16 +6,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   watchSources ++= (baseDirectory.value / "front-end" ** "*").get
 )
 
-resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
-resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
-
 libraryDependencies ++= Seq(
-  filters,
-  jdbc,
-  ehcache,
-  ws,
-  specs2 % Test,
   guice,
-  "com.pauldijou" %% "jwt-play" % "4.2.0")
-
-unmanagedResourceDirectories in Test += baseDirectory(_ / "target/web/public/test").value
+  "com.pauldijou" %% "jwt-play" % "4.2.0",
+  "mysql" % "mysql-connector-java" % "8.0.18",
+  "com.typesafe.slick" %% "slick" % "3.3.1",
+  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1"
+)
