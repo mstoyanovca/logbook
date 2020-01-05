@@ -1,7 +1,7 @@
 package controller
 
-import authentication.{AuthenticationAction, AuthenticationService}
-import dao.{User, UserService}
+import authentication.AuthenticationService
+import dao.{User, UserDao}
 import javax.inject.Inject
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc._
@@ -10,8 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LoginController @Inject()(cc: ControllerComponents,
-                                userService: UserService,
-                                authAction: AuthenticationAction,
+                                userDao: UserDao,
                                 authService: AuthenticationService) extends AbstractController(cc) {
 
   def login: Action[JsValue] = Action.async(parse.json) { implicit request =>
@@ -21,8 +20,8 @@ class LoginController @Inject()(cc: ControllerComponents,
       },
       user => {
         for {
-          u <- userService.findByEmailAndPassword(user)
-          uu: Result = u match {
+          maybeUser <- userDao.findByEmailAndPassword(user)
+          u = maybeUser match {
             case Some(u) =>
               u.password = None
               u.token = Some(authService.createJwt(user))
@@ -31,7 +30,7 @@ class LoginController @Inject()(cc: ControllerComponents,
                 .withHeaders("Connection" -> "keep-alive")
             case None => Unauthorized
           }
-        } yield uu
+        } yield u
       })
   }
 }
