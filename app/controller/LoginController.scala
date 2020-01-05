@@ -1,27 +1,37 @@
 package controller
 
 import authentication.{AuthenticationAction, AuthenticationService}
-import dao.UserDao
+import dao.{User, UserService}
 import javax.inject.Inject
-import model.User
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
 class LoginController @Inject()(cc: ControllerComponents,
-                                userDao: UserDao,
+                                userService: UserService,
                                 authAction: AuthenticationAction,
                                 authService: AuthenticationService) extends AbstractController(cc) {
 
-  def login: Action[AnyContent] = Action { implicit request =>
-    val user = request.body.asJson.get.as[User]
-    if (userDao.findUser(user)) {
-      user.password = None
-      user.token = Some(authService.createJwt(user))
-      Ok(Json.toJson(user))
-        .as("application/json")
-        .withHeaders("Connection" -> "keep-alive")
-    } else {
-      Unauthorized
-    }
+  def login: Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[User].fold(
+      errors => {
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+      },
+      user => {
+        for {
+          u <- userService.findByEmailAndPassword(user)
+          uu: Result = u match {
+            case Some(u) =>
+              u.password = None
+              u.token = Some(authService.createJwt(user))
+              Ok(Json.toJson(u))
+                .as("application/json")
+                .withHeaders("Connection" -> "keep-alive")
+            case None => Unauthorized
+          }
+        } yield uu
+      })
   }
 }

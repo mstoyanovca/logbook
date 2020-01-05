@@ -3,8 +3,8 @@ package authentication
 import java.time.Clock
 import java.util.UUID
 
+import dao.User
 import javax.inject.Inject
-import model.User
 import pdi.jwt.JwtAlgorithm.HS256
 import pdi.jwt._
 import pdi.jwt.exceptions.JwtLengthException

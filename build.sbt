@@ -11,5 +11,6 @@ libraryDependencies ++= Seq(
   "com.pauldijou" %% "jwt-play" % "4.2.0",
   "mysql" % "mysql-connector-java" % "8.0.18",
   "com.typesafe.slick" %% "slick" % "3.3.1",
-  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1"
+  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0"
 )
