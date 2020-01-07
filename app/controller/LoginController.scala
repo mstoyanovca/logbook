@@ -23,6 +23,7 @@ class LoginController @Inject()(cc: ControllerComponents,
           maybeUser <- userDao.findByEmailAndPassword(user)
           u = maybeUser match {
             case Some(u) =>
+              u.id = None
               u.password = None
               u.token = Some(authService.createJwt(user))
               Ok(Json.toJson(u))

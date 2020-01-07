@@ -1,14 +1,16 @@
 package dao
 
 import com.google.inject.Inject
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.{Json, Reads, Writes}
 import slick.ast.ColumnOption.Unique
+import slick.jdbc.JdbcProfile
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.Tag
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class User(id: Option[Long], email: String, var password: Option[String], var token: Option[String])
+case class User(var id: Option[Long], email: String, var password: Option[String], var token: Option[String])
 
 object User {
   implicit val reads: Reads[User] = Json.reads[User]
@@ -29,8 +31,11 @@ class UserTableDef(tag: Tag) extends Table[User](tag, "user") {
   override def * = (id.?, email, password.?) <> (create.tupled, destroy)
 }
 
-class UserDao @Inject()(implicit executionContext: ExecutionContext) {
-  val db: Database = Database.forConfig("mysql")
+class UserDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val dbConfigProvider: DatabaseConfigProvider)
+                       (implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+
+  import profile.api._
+
   val users = TableQuery[UserTableDef]
 
   def findById(id: Long): Future[Option[User]] = {
