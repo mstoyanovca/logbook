@@ -44,8 +44,6 @@ export class QsoService {
     }
 
     add(qso: QSO): Observable<QSO> {
-        qso.notes = qso.notes.trim();
-
         return this.http.post<QSO>(this.qsosUrl, qso, httpOptions).pipe(
             tap((newQso: QSO) => this.logger.log(`Added a qso with id = ${newQso.id}`)),
             catchError(this.handleError<QSO>('add'))

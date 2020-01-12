@@ -20,8 +20,8 @@ export class LogBookComponent implements OnInit {
 
     callsignDirection = Direction.None;
     frequencyDirection = Direction.None;
-    asc = '..\\..\\assets\\up-icon.png';
-    desc = '..\\..\\assets\\down-icon.png';
+    asc = '..\\..\\assets\\down-icon.png';
+    desc = '..\\..\\assets\\up-icon.png';
     callsignImagePath = '';
     frequencyImagePath = '';
 
@@ -31,6 +31,8 @@ export class LogBookComponent implements OnInit {
     pageSize = 10;
     collectionSize = 0;
 
+    monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
     qsoToDelete = new QSO(null, null, '', '', '', null);
 
     constructor(private qsoService: QsoService) {
@@ -38,16 +40,17 @@ export class LogBookComponent implements OnInit {
 
     ngOnInit() {
         const date = new Date();
+        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes());
         this.qsoDate = {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            day: date.getDate()
+            year: utcDate.getFullYear(),
+            month: utcDate.getMonth(),
+            day: utcDate.getDate()
         };
-        this.qsoTime = {hour: date.getHours(), minute: date.getMinutes()};
+        this.qsoTime = {hour: utcDate.getHours(), minute: utcDate.getMinutes()};
 
         this.newQso = new QSO(
-            null,
-            null,
+            utcDate,
+            utcDate,
             '',
             '',
             'SSB',
@@ -99,7 +102,7 @@ export class LogBookComponent implements OnInit {
         } else if (qso1.date.getMonth() !== qso2.date.getMonth()) {
             return qso1.date.getMonth() - qso2.date.getMonth();
         } else {
-            return qso1.date.getDay() - qso2.date.getDay();
+            return qso1.date.getDate() - qso2.date.getDate();
         }
     };
 
@@ -142,14 +145,18 @@ export class LogBookComponent implements OnInit {
         if (this.frequencyDirection === Direction.None) {
             // @ts-ignore
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
-                return qso1.frequency < qso2.frequency ? -1 : qso1.frequency > qso2.frequency ? 1 : this.compareDate;
+                return parseFloat(qso1.frequency) < parseFloat(qso2.frequency) ? -1 :
+                    parseFloat(qso1.frequency) > parseFloat(qso2.frequency) ? 1 :
+                        this.compareDate;
             });
             this.frequencyDirection = Direction.Asc;
             this.frequencyImagePath = this.asc;
         } else if (this.frequencyDirection === Direction.Asc) {
             // @ts-ignore
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
-                return qso1.frequency > qso2.frequency ? -1 : qso1.frequency < qso2.frequency ? 1 : this.compareDate;
+                return parseFloat(qso1.frequency) > parseFloat(qso2.frequency) ? -1 :
+                    parseFloat(qso1.frequency) < parseFloat(qso2.frequency) ? 1 :
+                        this.compareDate;
             });
             this.frequencyDirection = Direction.Desc;
             this.frequencyImagePath = this.desc;
@@ -161,11 +168,25 @@ export class LogBookComponent implements OnInit {
     };
 
     private filterData = (): void => {
-        this.qsos = this.qsosFromDB.filter(qso =>
-            (qso.date.getFullYear() + '-' + qso.date.getMonth() + '-' + qso.date.getDay()).indexOf(this.filter) > -1 ||
-            (qso.time.getHours() + ':' + qso.time.getMinutes()).indexOf(this.filter) > -1 ||
-            qso.callsign.indexOf(this.filter.toUpperCase()) > -1 ||
-            qso.frequency.toString().toLowerCase().indexOf(this.filter) > -1);
+        this.qsos = this.filter.trim().length > 0 ?
+            this.qsosFromDB.filter(qso => {
+                const time = qso.time.toLocaleTimeString(['en-US'], {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                    timeZone: 'UTC'
+                });
+                return this.monthNames[qso.date.getUTCMonth()].toLowerCase() === this.filter.toLowerCase() ||
+                    qso.date.getUTCDate().toString() === this.filter ||
+                    qso.date.getUTCFullYear().toString() === this.filter ||
+                    time.split(' ')[0] === this.filter ||
+                    qso.callsign.toLowerCase() === this.filter.toLowerCase() ||
+                    qso.frequency.indexOf(this.filter) > -1 ||
+                    qso.mode.toLowerCase() === this.filter.toLowerCase() ||
+                    qso.name.toLowerCase() === this.filter.toLowerCase() ||
+                    qso.qth.toLowerCase() === this.filter.toLowerCase();
+            }) : this.qsosFromDB;
+
         this.collectionSize = this.qsos.length;
     };
 
