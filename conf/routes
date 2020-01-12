@@ -1,4 +1,2 @@
 POST        /login               controller.LoginController.login()
 GET         /qso                 controller.QsoController.qso()
-
-# GET         /assets/*file        controllers.Assets.versioned(path="/front-end", file: Asset)

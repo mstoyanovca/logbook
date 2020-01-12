@@ -13,8 +13,8 @@ import scala.concurrent.{ExecutionContext, Future}
 case class User(var id: Option[Long], email: String, var password: Option[String], var token: Option[String])
 
 object User {
-  implicit val reads: Reads[User] = Json.reads[User]
-  implicit val writes: Writes[User] = Json.writes[User]
+  implicit val userReads: Reads[User] = Json.reads[User]
+  implicit val userWrites: Writes[User] = Json.writes[User]
 }
 
 class UserTableDef(tag: Tag) extends Table[User](tag, "user") {

@@ -1,5 +1,5 @@
 name := "va3aui"
-version := "19.12.1-SNAPSHOT"
+version := "20.1.1-SNAPSHOT"
 scalaVersion := "2.12.10"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
