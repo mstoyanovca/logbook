@@ -1,2 +1,3 @@
-POST        /login               controller.LoginController.login()
-GET         /qso                 controller.QsoController.qso()
+POST        /login        controller.LoginController.login
+GET         /qso          controller.QsoController.findAll
+POST        /qso          controller.QsoController.add

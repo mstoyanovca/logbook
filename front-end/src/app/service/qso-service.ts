@@ -24,21 +24,18 @@ export class QsoService {
     findAll(): Observable<QSO[]> {
         return this.http.get<QSO[]>(this.qsosUrl).pipe(
             tap(response => {
-                response.forEach(r => {
-                    r.date = new Date(r.date);
-                    r.time = new Date('1970-01-01T' + r.time + '.000Z');
-                });
-                this.logger.log('findAll()');
+                response.forEach(r => r.dateTime = new Date(r.dateTime));
+                this.logger.log('findAll()')
             }),
             catchError(this.handleError('findAll', []))
         )
     }
 
-    findByDateTimeAndCallsign(date: Date, time: Date, callsign: string): Observable<QSO[]> {
-        const url = `${this.qsosUrl}?date=${date}&time=${time}&callsign=${callsign}`;
+    findByDateTimeAndCallsign(dateTime: Date, callsign: string): Observable<QSO[]> {
+        const url = `${this.qsosUrl}?date=${dateTime}&tcallsign=${callsign}`;
 
         return this.http.get<QSO[]>(url).pipe(
-            tap(_ => this.logger.log(`findByDateTimeAndCallsign(${date}, ${time}, ${callsign})`)),
+            tap(_ => this.logger.log(`findByDateTimeAndCallsign(${dateTime}, ${callsign})`)),
             catchError(this.handleError('findByDateTimeAndCallsign', []))
         );
     }

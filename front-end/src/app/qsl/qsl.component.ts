@@ -18,9 +18,8 @@ export class QslComponent implements OnInit {
 
     ngOnInit() {
         const now = new Date();
-        const date = new Date(now.getFullYear(), now.getMonth(), now.getDay());
-        const time: Date = new Date(0, 0, 0, now.getHours(), now.getMinutes());
-        this.qso = new QSO(date, time, '', '', 'SSB', '');
+        const dateTime = new Date(now.getFullYear(), now.getMonth(), now.getDay());
+        this.qso = new QSO(dateTime, '', '', 'SSB', '');
     }
 
     download() {

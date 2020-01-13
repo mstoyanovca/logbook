@@ -50,7 +50,6 @@ export class LogBookComponent implements OnInit {
 
         this.newQso = new QSO(
             utcDate,
-            utcDate,
             '',
             '',
             'SSB',
@@ -62,17 +61,16 @@ export class LogBookComponent implements OnInit {
     private findAll(): void {
         this.qsoService.findAll().subscribe(result => {
             this.qsosFromDB = result;
-            this.qsos = this.qsosFromDB.sort(this.compareDate).sort(this.compareTime);
+            this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
         });
     }
 
     private add(qso: QSO): void {
-        qso.date = new Date(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day);
-        qso.time = new Date(0, 0, 0, this.qsoTime.hour, this.qsoTime.minute);
+        qso.dateTime = new Date(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day, this.qsoTime.hour, this.qsoTime.minute);
         this.qsoService.add(qso).subscribe(result => {
             this.qsosFromDB.push(result);
-            this.qsos = this.qsosFromDB.sort(this.compareDate).sort(this.compareTime);
+            this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
             this.resetManualSorting();
         });
@@ -81,7 +79,7 @@ export class LogBookComponent implements OnInit {
     private delete(qso: QSO): void {
         this.qsoService.delete(qso).subscribe(result => {
             this.qsosFromDB = this.qsosFromDB.filter(q => q !== qso);
-            this.qsos = this.qsosFromDB.sort(this.compareDate).sort(this.compareTime);
+            this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
             this.resetManualSorting();
             document.getElementById('closeQsoModal').click();
@@ -96,22 +94,17 @@ export class LogBookComponent implements OnInit {
         this.qsoToDelete = qso;
     }
 
-    compareDate = (qso1: QSO, qso2: QSO): number => {
-        if (qso1.date.getFullYear() !== qso2.date.getFullYear()) {
-            return qso1.date.getFullYear() - qso2.date.getFullYear();
-        } else if (qso1.date.getMonth() !== qso2.date.getMonth()) {
-            return qso1.date.getMonth() - qso2.date.getMonth();
+    compareDateTime = (qso1: QSO, qso2: QSO): number => {
+        if (qso1.dateTime.getFullYear() !== qso2.dateTime.getFullYear()) {
+            return qso1.dateTime.getFullYear() - qso2.dateTime.getFullYear();
+        } else if (qso1.dateTime.getMonth() !== qso2.dateTime.getMonth()) {
+            return qso1.dateTime.getMonth() - qso2.dateTime.getMonth();
+        } else if (qso1.dateTime.getDate() !== qso2.dateTime.getDate()) {
+            return qso1.dateTime.getDate() - qso2.dateTime.getDate();
+        } else if (qso1.dateTime.getHours() !== qso2.dateTime.getHours()) {
+            return qso1.dateTime.getHours() - qso2.dateTime.getHours();
         } else {
-            return qso1.date.getDate() - qso2.date.getDate();
-        }
-    };
-
-    compareTime = (qso1: QSO, qso2: QSO): number => {
-        const datesDiff = this.compareDate(qso1, qso2);
-        if (datesDiff === 0) {
-            return qso1.time.getHours() !== qso2.time.getHours() ? qso1.time.getHours() - qso2.time.getHours() : qso1.time.getMinutes() - qso2.time.getMinutes();
-        } else {
-            return datesDiff;
+            return qso1.dateTime.getMinutes() - qso2.dateTime.getMinutes();
         }
     };
 
@@ -121,19 +114,19 @@ export class LogBookComponent implements OnInit {
         if (this.callsignDirection === Direction.None) {
             // @ts-ignore
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
-                return qso1.callsign < qso2.callsign ? -1 : qso1.callsign > qso2.callsign ? 1 : this.compareDate;
+                return qso1.callsign < qso2.callsign ? -1 : qso1.callsign > qso2.callsign ? 1 : this.compareDateTime;
             });
             this.callsignDirection = Direction.Asc;
             this.callsignImagePath = this.asc;
         } else if (this.callsignDirection === Direction.Asc) {
             // @ts-ignore
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
-                return qso1.callsign > qso2.callsign ? -1 : qso1.callsign < qso2.callsign ? 1 : this.compareDate;
+                return qso1.callsign > qso2.callsign ? -1 : qso1.callsign < qso2.callsign ? 1 : this.compareDateTime;
             });
             this.callsignDirection = Direction.Desc;
             this.callsignImagePath = this.desc;
         } else {
-            this.qsos = this.qsosFromDB.sort(this.compareDate);
+            this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.callsignDirection = Direction.None;
             this.callsignImagePath = '';
         }
@@ -147,7 +140,7 @@ export class LogBookComponent implements OnInit {
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
                 return parseFloat(qso1.frequency) < parseFloat(qso2.frequency) ? -1 :
                     parseFloat(qso1.frequency) > parseFloat(qso2.frequency) ? 1 :
-                        this.compareDate;
+                        this.compareDateTime;
             });
             this.frequencyDirection = Direction.Asc;
             this.frequencyImagePath = this.asc;
@@ -156,12 +149,12 @@ export class LogBookComponent implements OnInit {
             this.qsos = this.qsosFromDB.sort((qso1: QSO, qso2: QSO) => {
                 return parseFloat(qso1.frequency) > parseFloat(qso2.frequency) ? -1 :
                     parseFloat(qso1.frequency) < parseFloat(qso2.frequency) ? 1 :
-                        this.compareDate;
+                        this.compareDateTime;
             });
             this.frequencyDirection = Direction.Desc;
             this.frequencyImagePath = this.desc;
         } else {
-            this.qsos = this.qsosFromDB.sort(this.compareDate);
+            this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.frequencyDirection = Direction.None;
             this.frequencyImagePath = '';
         }
@@ -170,15 +163,15 @@ export class LogBookComponent implements OnInit {
     private filterData = (): void => {
         this.qsos = this.filter.trim().length > 0 ?
             this.qsosFromDB.filter(qso => {
-                const time = qso.time.toLocaleTimeString(['en-US'], {
+                const time = qso.dateTime.toLocaleTimeString(['en-US'], {
                     hour: 'numeric',
                     minute: 'numeric',
                     hour12: true,
                     timeZone: 'UTC'
                 });
-                return this.monthNames[qso.date.getUTCMonth()].toLowerCase() === this.filter.toLowerCase() ||
-                    qso.date.getUTCDate().toString() === this.filter ||
-                    qso.date.getUTCFullYear().toString() === this.filter ||
+                return this.monthNames[qso.dateTime.getUTCMonth()].toLowerCase() === this.filter.toLowerCase() ||
+                    qso.dateTime.getUTCDate().toString() === this.filter ||
+                    qso.dateTime.getUTCFullYear().toString() === this.filter ||
                     time.split(' ')[0] === this.filter ||
                     qso.callsign.toLowerCase() === this.filter.toLowerCase() ||
                     qso.frequency.indexOf(this.filter) > -1 ||

@@ -49,8 +49,8 @@
         <div class="card" *ngFor="let qso of qsos | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; index as i; even as even;">
           <div class="card-header p-0" data-toggle="collapse" [attr.data-target]="'#collapse'+i">
             <div class="row m-0 sortable" id="accordion-row" [ngStyle]="{'background-color': even ? 'white' : ''}">
-              <div class="col-md-2 col-4 p-1">{{qso.date | date :'mediumDate' :'GMT'}}</div>
-              <div class="col-md-2 col-4 p-1">{{qso.time | date : 'shortTime' : 'GMT'}}</div>
+              <div class="col-md-2 col-4 p-1">{{qso.dateTime | date :'mediumDate'}}</div>
+              <div class="col-md-2 col-4 p-1">{{qso.dateTime | date : 'shortTime'}}</div>
               <div class="col-md-2 col-4 p-1" >{{qso.callsign}}</div>
               <div class="col-md-2 d-none d-md-block p-1">{{qso.frequency}}</div>
               <div class="col-md-2 d-none d-md-block p-1">{{qso.mode}}</div>

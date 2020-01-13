@@ -11,7 +11,7 @@ import {NGXLogger} from 'ngx-logger';
 })
 
 export class RequestQslComponent implements OnInit {
-    qso = new QSO(null, null, '', '', '', '');
+    qso = new QSO(null, '', '', '', '');
 
     constructor(
         private qsoService: QsoService,
@@ -24,11 +24,10 @@ export class RequestQslComponent implements OnInit {
 
     onSubmit() {
         this.logger.log('Requesting a QSL card:');
-        this.logger.log('date=' + JSON.stringify(this.qso.date));
-        this.logger.log('time=' + JSON.stringify(this.qso.time));
+        this.logger.log('date=' + JSON.stringify(this.qso.dateTime));
         this.logger.log('callsign=' + this.qso.callsign);
 
-        this.qsoService.findByDateTimeAndCallsign(this.qso.date, this.qso.time, this.qso.callsign).subscribe(result => {
+        this.qsoService.findByDateTimeAndCallsign(this.qso.dateTime, this.qso.callsign).subscribe(result => {
             this.qso = result[0];
 
             this.logger.log('Found a QSO:');

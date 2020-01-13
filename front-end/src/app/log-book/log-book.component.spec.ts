@@ -11,22 +11,18 @@ describe('LogBookComponent', () => {
     let component: LogBookComponent;
     let fixture: ComponentFixture<LogBookComponent>;
 
-    const date1 = new Date(2019, 12, 15);
-    const date2 = new Date(2019, 12, 16);
+    const dateTime1 = new Date(2019, 12, 15, 22, 0);
+    const dateTime2 = new Date(2019, 12, 16, 20, 52);
 
-    const time1 = new Date(0, 0, 0, 22, 0);
-    const time2 = new Date(0, 0, 0, 20, 52);
-
-    const qso1 = new QSO(2, 'LZ1KVY', date1, time1, '3.564', 'SSB', '588', 'Dipole');
-    const qso2 = new QSO(3, 'LZ2KVV', date2, time2, '446.100', 'FM', '599', '5W');
+    const qso1 = new QSO(dateTime1, 'LZ1KVY', '3.564', 'SSB', '588');
+    const qso2 = new QSO(dateTime2, 'LZ2KVV', '446.100', 'FM', '599');
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [LogBookComponent],
             imports: [FormsModule, NgbTimepickerModule, NgbDatepickerModule, NgbPaginationModule, HttpClientTestingModule],
             providers: [NGXLogger, {provide: NGXLoggerHttpService, useClass: NGXLoggerHttpServiceMock}, LoggerConfig]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -61,12 +57,8 @@ describe('LogBookComponent', () => {
         expect(fixture.debugElement.query(By.css('#deleteQsoModal')).nativeElement.height).toBeUndefined();
     });
 
-    it('should compare date', () => {
-        expect(component.compareDate(qso1, qso2)).toBeLessThan(0);
-    });
-
-    it('should compare time', () => {
-        expect(component.compareTime(qso1, qso2)).toBeLessThan(0);
+    it('should compare dateTime', () => {
+        expect(component.compareDateTime(qso1, qso2)).toBeLessThan(0);
     });
 
     // TODO turn into frequency:
