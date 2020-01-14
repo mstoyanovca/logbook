@@ -42,7 +42,7 @@ export class QsoService {
 
     add(qso: QSO): Observable<QSO> {
         return this.http.post<QSO>(this.qsosUrl, qso, httpOptions).pipe(
-            tap(q => this.logger.log(`Added a qso: ${qso}`)),
+            tap(_ => this.logger.log(`Added a qso: ${qso}`)),
             catchError(this.handleError<QSO>('add'))
         );
     }
