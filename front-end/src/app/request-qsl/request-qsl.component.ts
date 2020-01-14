@@ -24,7 +24,7 @@ export class RequestQslComponent implements OnInit {
 
     onSubmit() {
         this.logger.log('Requesting a QSL card:');
-        this.logger.log('date=' + JSON.stringify(this.qso.dateTime));
+        this.logger.log('dateTime=' + JSON.stringify(this.qso.dateTime));
         this.logger.log('callsign=' + this.qso.callsign);
 
         this.qsoService.findByDateTimeAndCallsign(this.qso.dateTime, this.qso.callsign).subscribe(result => {

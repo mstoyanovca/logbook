@@ -32,7 +32,7 @@ export class QsoService {
     }
 
     findByDateTimeAndCallsign(dateTime: Date, callsign: string): Observable<QSO[]> {
-        const url = `${this.qsosUrl}?date=${dateTime}&tcallsign=${callsign}`;
+        const url = `${this.qsosUrl}?date=${dateTime}&callsign=${callsign}`;
 
         return this.http.get<QSO[]>(url).pipe(
             tap(_ => this.logger.log(`findByDateTimeAndCallsign(${dateTime}, ${callsign})`)),
@@ -42,7 +42,7 @@ export class QsoService {
 
     add(qso: QSO): Observable<QSO> {
         return this.http.post<QSO>(this.qsosUrl, qso, httpOptions).pipe(
-            tap((newQso: QSO) => this.logger.log(`Added a qso with id = ${newQso.id}`)),
+            tap(q => this.logger.log(`Added a qso: ${qso}`)),
             catchError(this.handleError<QSO>('add'))
         );
     }
@@ -51,7 +51,7 @@ export class QsoService {
         const url = `${this.qsosUrl}/${qso.id}`;
 
         return this.http.delete<QSO>(url, httpOptions).pipe(
-            tap(_ => this.logger.log(`Deleted a qso with id = ${qso.id}`)),
+            tap(_ => this.logger.log(`Deleted a qso: ${qso}`)),
             catchError(this.handleError<QSO>('delete'))
         );
     }

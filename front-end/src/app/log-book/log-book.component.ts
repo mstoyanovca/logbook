@@ -33,17 +33,17 @@ export class LogBookComponent implements OnInit {
 
     monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    qsoToDelete = new QSO(null, null, '', '', '', null);
+    qsoToDelete = new QSO(null, '', '', '', '', '');
 
     constructor(private qsoService: QsoService) {
     }
 
     ngOnInit() {
         const date = new Date();
-        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes());
+        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes());
         this.qsoDate = {
             year: utcDate.getFullYear(),
-            month: utcDate.getMonth(),
+            month: utcDate.getMonth() + 1,
             day: utcDate.getDate()
         };
         this.qsoTime = {hour: utcDate.getHours(), minute: utcDate.getMinutes()};
@@ -53,7 +53,7 @@ export class LogBookComponent implements OnInit {
             '',
             '',
             'SSB',
-            null);
+            '');
 
         this.findAll();
     }
@@ -67,7 +67,7 @@ export class LogBookComponent implements OnInit {
     }
 
     private add(qso: QSO): void {
-        qso.dateTime = new Date(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day, this.qsoTime.hour, this.qsoTime.minute);
+        qso.dateTime = new Date(Date.UTC(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day, this.qsoTime.hour, this.qsoTime.minute));
         this.qsoService.add(qso).subscribe(result => {
             this.qsosFromDB.push(result);
             this.qsos = this.qsosFromDB.sort(this.compareDateTime);
