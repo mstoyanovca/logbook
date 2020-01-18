@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 import com.google.inject.Inject
+import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import slick.jdbc.JdbcProfile
@@ -20,14 +21,16 @@ case class Qso(var id: Option[Long],
                mode: String,
                rstSent: String,
                rstReceived: Option[String] = None,
-               power: Option[Int] = None,
+               power: Option[String] = None,
                name: Option[String] = None,
                qth: Option[String] = None,
                notes: Option[String] = None)
 
 object Qso {
 
+  import play.api.http._
   import play.api.libs.functional.syntax._
+  import play.api.mvc._
 
   implicit val qsoReads: Reads[Qso] = (
     (JsPath \ "id").readNullable[Long] and
@@ -38,13 +41,17 @@ object Qso {
       (JsPath \ "mode").read[String] and
       (JsPath \ "rstSent").read[String] and
       (JsPath \ "rstReceived").readNullable[String] and
-      (JsPath \ "power").readNullable[Int] and
+      (JsPath \ "power").readNullable[String] and
       (JsPath \ "name").readNullable[String] and
       (JsPath \ "qth").readNullable[String] and
       (JsPath \ "notes").readNullable[String]
     ) (Qso.apply _)
 
   implicit val qsoWrites: Writes[Qso] = Json.writes[Qso]
+
+  implicit def writeable(implicit codec: Codec): Writeable[Qso] = Writeable(data => codec.encode(data.toString))
+
+  implicit def contentType(implicit codec: Codec): ContentTypeOf[Qso] = ContentTypeOf(Some(ContentTypes.TEXT))
 }
 
 class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
@@ -64,7 +71,7 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
 
   def rstReceived = column[String]("rst_received")
 
-  def power = column[Int]("power")
+  def power = column[String]("power")
 
   def name = column[String]("name")
 
@@ -72,7 +79,7 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
 
   def notes = column[String]("notes")
 
-  def create: (Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[Int], Option[String], Option[String], Option[String]) => Qso =
+  def create: (Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String]) => Qso =
     (id: Option[Long],
      userId: Option[Long],
      dateTime: String,
@@ -81,7 +88,7 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
      mode: String,
      rstSent: String,
      rstReceived: Option[String],
-     power: Option[Int],
+     power: Option[String],
      name: Option[String],
      qth: Option[String],
      notes: Option[String]) =>
@@ -98,7 +105,7 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
         qth,
         notes)
 
-  def destroy(qso: Qso): Option[(Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[Int], Option[String], Option[String], Option[String])] =
+  def destroy(qso: Qso): Option[(Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] =
     Some(qso.id,
       qso.userId,
       qso.dateTime.format(DateTimeFormatter.ISO_DATE_TIME),
@@ -121,6 +128,7 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
 
   import profile.api._
 
+  val logger: Logger = Logger(this.getClass)
   val qsos = TableQuery[QsoTableDef]
 
   def findById(id: Long): Future[Option[Qso]] = {
@@ -131,14 +139,17 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
     db.run(qsos.result)
   }
 
-  def add(qso: Qso): Future[String] = {
-    // TODO: get userId from the jwt token: qso.userId = Some(1L)
-    db.run(qsos += qso).map(r => "Added a new qso").recover {
-      case ex: Exception => ex.getCause.getMessage
-    }
+  def add(qso: Qso): Future[Qso] = {
+    for {
+      qso <- db.run(qsos returning qsos.map(_.id) into ((qso, id) => qso.copy(id = Some(id))) += qso)
+      _ = logger.info(s"Added a new QSO: $qso" + qso)
+    } yield qso
   }
 
   def delete(id: Long): Future[Int] = {
-    db.run(qsos.filter(_.id === id).delete)
+    for {
+      i <- db.run(qsos.filter(_.id === id).delete)
+      _ = logger.info(s"Deleted a qso with id=$id")
+    } yield i
   }
 }

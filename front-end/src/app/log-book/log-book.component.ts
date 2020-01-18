@@ -67,18 +67,19 @@ export class LogBookComponent implements OnInit {
     }
 
     private add(qso: QSO): void {
-        qso.dateTime = new Date(Date.UTC(this.qsoDate.year, this.qsoDate.month, this.qsoDate.day, this.qsoTime.hour, this.qsoTime.minute));
+        qso.dateTime = new Date(Date.UTC(this.qsoDate.year, this.qsoDate.month - 1, this.qsoDate.day, this.qsoTime.hour, this.qsoTime.minute));
         this.qsoService.add(qso).subscribe(result => {
             this.qsosFromDB.push(result);
             this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
             this.resetManualSorting();
+            document.getElementById('addQsoLink').click();
         });
     }
 
     private delete(qso: QSO): void {
-        this.qsoService.delete(qso).subscribe(result => {
-            this.qsosFromDB = this.qsosFromDB.filter(q => q !== qso);
+        this.qsoService.delete(qso).subscribe(_ => {
+            this.qsosFromDB = this.qsosFromDB.filter(q => q.id !== qso.id);
             this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
             this.resetManualSorting();

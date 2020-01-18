@@ -6,7 +6,10 @@ import {catchError, tap} from 'rxjs/operators';
 import {NGXLogger} from 'ngx-logger';
 
 const httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json'
+    })
 };
 
 @Injectable({
@@ -42,16 +45,19 @@ export class QsoService {
 
     add(qso: QSO): Observable<QSO> {
         return this.http.post<QSO>(this.qsosUrl, qso, httpOptions).pipe(
-            tap(_ => this.logger.log(`Added a qso: ${qso}`)),
-            catchError(this.handleError<QSO>('add'))
+            tap(response => {
+                response.dateTime = new Date(response.dateTime);
+                this.logger.log(`Added a new qso: ${JSON.stringify(response)}`);
+            }),
+            catchError(this.handleError<QSO>('add', null))
         );
     }
 
-    delete(qso: QSO): Observable<QSO> {
+    delete(qso: QSO): Observable<{}> {
         const url = `${this.qsosUrl}/${qso.id}`;
 
         return this.http.delete<QSO>(url, httpOptions).pipe(
-            tap(_ => this.logger.log(`Deleted a qso: ${qso}`)),
+            tap(_ => this.logger.log(`Deleted a qso: ${JSON.stringify(qso)}`)),
             catchError(this.handleError<QSO>('delete'))
         );
     }

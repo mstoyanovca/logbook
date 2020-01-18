@@ -14,7 +14,7 @@
           <a class="nav-link" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" data-toggle="tab" href="#logBook" role="tab">Log Book</a>
+          <a class="nav-link active" data-toggle="tab" href="#logBook" role="tab" id="addQsoLink">Log Book</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" href="#addQso" role="tab">Add a QSO</a>
@@ -143,7 +143,7 @@
           <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&callsign.invalid">Callsign is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="frequency">Frequency</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="frequency" name="frequency" [(ngModel)]="newQso.frequency" #frequency="ngModel" required>
+            <input type="text" class="form-control" id="frequency" name="frequency" placeholder="7.150MHz" [(ngModel)]="newQso.frequency" #frequency="ngModel" required>
           </div>
           <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&frequency.invalid">Frequency is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="mode">Mode</label>
@@ -163,7 +163,7 @@
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstsent">RST sent</label>
           <div class="input-group col-lg-2 col-md-10 mt-lg-0 mt-md-4">
-            <input type="text" class="form-control" id="rstsent" name="rstsent" placeholder="59" [(ngModel)]="newQso.rstSent" #rstsent="ngModel" required>
+            <input type="text" class="form-control" id="rstsent" name="rstsent" placeholder="59+" [(ngModel)]="newQso.rstSent" #rstsent="ngModel" required>
           </div>
           <div class="form-text text-danger col-md-10 offset-md-2 col-sm-12 d-sm-block d-lg-none" *ngIf="(addQsoForm.touched||addQsoForm.dirty)&&rstsent.invalid">RST is required</div>
           <label class="col-form-label col-lg-1 col-md-2 mt-lg-0 mt-md-4" for="rstrec">RST rcv</label>
@@ -191,7 +191,7 @@
         <div class="form-group row">
           <label class="col-form-label col-lg-1 col-md-2" for="notes">Notes</label>
           <div class="input-group col-lg-8 col-md-10">
-            <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Notes" [(ngModel)]="newQso.notes" maxlength="128"></textarea>
+            <textarea class="form-control" id="notes" name="notes" rows="2" [(ngModel)]="newQso.notes" maxlength="128"></textarea>
           </div>
         </div>
         <button class="btn btn-primary offset-lg-1 offset-md-2" type="submit" [disabled]="addQsoForm.form.invalid">Submit</button>

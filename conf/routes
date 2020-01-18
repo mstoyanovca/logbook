@@ -1,3 +1,5 @@
-POST        /login        controller.LoginController.login
-GET         /qso          controller.QsoController.findAll
-POST        /qso          controller.QsoController.add
+POST          /login          controller.LoginController.login
+
+GET           /qso            controller.QsoController.findAll
+POST          /qso            controller.QsoController.add
+DELETE        /qso/:id        controller.QsoController.delete(id: String)

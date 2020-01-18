@@ -5,7 +5,7 @@ export class QSO {
                 public mode: string,
                 public rstSent: string,
                 public rstReceived?: string,
-                public power?: number,
+                public power?: string,
                 public name?: string,
                 public qth?: string,
                 public notes?: string,

@@ -14,12 +14,8 @@ class QsoController @Inject()(cc: ControllerComponents,
                               qsoDao: QsoDao) extends AbstractController(cc) {
 
   def findAll: Action[AnyContent] = authAction.async { implicit authenticationRequest =>
-    qsoDao.findAll.map {
-      qsos =>
-        Ok(Json.toJson(qsos))
-          .as("application/json")
-          .withHeaders("Connection" -> "keep-alive")
-    }
+    // TODO make it findAllByUserId
+    qsoDao.findAll.map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
   }
 
   def add: Action[JsValue] = authAction.async(parse.json) { implicit authenticationRequest =>
@@ -28,7 +24,12 @@ class QsoController @Inject()(cc: ControllerComponents,
         Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       qso => {
-        qsoDao.add(qso).map(s => Ok(s).as("application/json").withHeaders("Connection" -> "keep-alive"))
+        qso.userId = Some(authenticationRequest.claim.subject.get.toLong)
+        qsoDao.add(qso).map(qso => Ok(Json.toJson(qso)).as("application/json"))
       })
+  }
+
+  def delete(id: String): Action[AnyContent] = authAction.async { implicit authenticationRequest =>
+    qsoDao.delete(id.toLong).map(i => Ok(i.toString).as("application/json"))
   }
 }

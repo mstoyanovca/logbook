@@ -26,7 +26,7 @@ class AuthenticationService @Inject()(config: Configuration) {
       JwtHeader(JwtAlgorithm.HS256).toJson,
       JwtClaim()
         .by(issuer)
-        .about(user.email)
+        .about(user.id.get.toString)
         .to(audience)
         .expiresIn(expiration)
         .startsNow
