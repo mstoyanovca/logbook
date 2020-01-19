@@ -15,7 +15,7 @@
     <p class="text-justify">I've shared a few projects, which I am currently working on, with schematics, description and source code.</p>
     <p class="text-justify">If you are in my log book, a QSL card is available for download.</p>
     <p class="text-justify">The rest of the web site is for personal use, and it requires login.</p>
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="mt-3">
+    <form #loginForm="ngForm" (ngSubmit)="login()" class="mt-3">
       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="email">Email:</label>
         <div class="col-md-10">
@@ -61,7 +61,9 @@
     <hr>
     <button class="btn btn-link p-0" *ngIf="loggedIn" (click)="logout()">Logout</button>
     <br *ngIf="loggedIn">
-    <button class="btn btn-link p-0" id="forgotPwdBtn" *ngIf="loggedIn" data-toggle="modal" data-target="#changePasswordModal">Change password</button>
+    <button class="btn btn-link p-0" id="forgotPwdBtn" *ngIf="loggedIn" data-toggle="modal" data-target="#changePasswordModal" (click)="resetChangePasswordError()">
+      Change password
+    </button>
     <button class="btn btn-link p-0" *ngIf="!loggedIn" data-toggle="modal" data-target="#forgotPasswordModal">Forgot password</button>
   </div>
 </div>
@@ -107,7 +109,7 @@
         <form #changePasswordForm="ngForm">
           <div class="form-group">
             <label for="oldPassword">Old password</label>
-            <input class="form-control" id="oldPassword" name="oldPassword" type="password" [(ngModel)]="oldPassword" placeholder="Enter the old password" required>
+            <input class="form-control" id="oldPassword" name="oldPassword" type="password" [(ngModel)]="oldPassword" placeholder="Type the old password" required>
             <label class="mt-3" for="newPassword">New password</label>
             <input class="form-control" id="newPassword" name="newPassword" type="password" [(ngModel)]="newPassword" placeholder="Enter a new password" required
                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*()<>?]).{6,}">
@@ -115,12 +117,13 @@
             <input class="form-control" id="newPasswordConfirm" name="newPasswordConfirm" type="password" [(ngModel)]="newPasswordConfirm" placeholder="Confirm the new password"
                    required pattern="{{newPassword}}">
             <small class="form-text text-muted text-justify">Min 6 characters, at least one capital letter, a lower case letter, a number, and a special character.</small>
+            <div class="form-text text-danger" id="changePasswordError">{{changePasswordError}}</div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" id="closeChangePasswordModal" data-dismiss="modal">Close</button>
-        <button class="btn btn-primary" (click)="changePassword()" [disabled]="!changePasswordForm.form.valid">Change</button>
+        <button class="btn btn-secondary" id="closeChangePasswordModal" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" (click)="changePassword()" [disabled]="!changePasswordForm.form.valid">Submit</button>
       </div>
     </div>
   </div>

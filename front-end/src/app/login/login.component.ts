@@ -6,7 +6,7 @@ import {NGXLogger} from 'ngx-logger';
 
 @Component({selector: 'app-login', templateUrl: './login.component.html', styleUrls: ['./login.component.css']})
 export class LoginComponent {
-    user = new User('', '', '');
+    user = new User('', '');
     authenticationError = '';
     loggedIn: boolean;
 
@@ -15,19 +15,19 @@ export class LoginComponent {
     oldPassword: string;
     newPassword: string;
     newPasswordConfirm: string;
+    changePasswordError: string;
 
     constructor(private authenticationService: AuthenticationService, private logger: NGXLogger) {
         if (this.authenticationService.currentUserValue) this.loggedIn = true;
     }
 
-    onSubmit() {
+    login() {
         if (this.loggedIn) return;
         this.logger.log('Logging in with an email ' + this.user.email);
 
         this.authenticationService.login(this.user.email, this.user.password)
             .pipe(first())
-            .subscribe(
-                data => {
+            .subscribe(_ => {
                     this.loggedIn = true;
                     this.authenticationError = '';
                     this.logger.log('Logged in');
@@ -38,12 +38,6 @@ export class LoginComponent {
                 });
     }
 
-    logout() {
-        this.authenticationService.logout();
-        this.loggedIn = false;
-        this.logger.log('Logged out');
-    }
-
     resetPassword() {
         this.logger.log('Password reset requested for email: ' + this.resetPasswordEmail);
         document.getElementById('closeForgotPasswordModal').click();
@@ -51,6 +45,28 @@ export class LoginComponent {
 
     changePassword() {
         this.logger.log('Password change requested');
-        document.getElementById('closeChangePasswordModal').click();
+
+        this.authenticationService.changePassword(this.newPassword)
+            .subscribe(result => {
+                    if (result === "Success") {
+                        this.logger.log('Password changed successfully');
+                        document.getElementById('closeChangePasswordModal').click();
+                        this.logout();
+                    }
+                }, error => {
+                    this.logger.log(`Password change failed: ${error}`);
+                    this.changePasswordError = 'Password change failed';
+                }
+            );
+    }
+
+    logout() {
+        this.authenticationService.logout();
+        this.loggedIn = false;
+        this.logger.log('Logged out');
+    }
+
+    resetChangePasswordError() {
+        this.changePasswordError = '';
     }
 }

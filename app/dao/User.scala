@@ -56,6 +56,13 @@ class UserDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val d
     }
   }
 
+  def changePassword(userId: Long, newPassword: String): Future[Int] = {
+    val p = for {
+      u <- users if u.id === userId
+    } yield u.password
+    db.run(p.update(newPassword))
+  }
+
   def delete(id: Long): Future[Int] = {
     db.run(users.filter(_.id === id).delete)
   }

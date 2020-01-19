@@ -1,5 +1,6 @@
-POST          /login          controller.LoginController.login
+POST          /login                 controller.LoginController.login()
+POST          /changePassword        controller.LoginController.changePassword()
 
-GET           /qso            controller.QsoController.findAll
-POST          /qso            controller.QsoController.add
-DELETE        /qso/:id        controller.QsoController.delete(id: String)
+GET           /qso                   controller.QsoController.findAll()
+POST          /qso                   controller.QsoController.add()
+DELETE        /qso/:id               controller.QsoController.delete(id: String)

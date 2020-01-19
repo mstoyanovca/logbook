@@ -73,7 +73,7 @@ export class LogBookComponent implements OnInit {
             this.qsos = this.qsosFromDB.sort(this.compareDateTime);
             this.collectionSize = this.qsosFromDB.length;
             this.resetManualSorting();
-            document.getElementById('addQsoLink').click();
+            document.getElementById('logBookLink').click();
         });
     }
 

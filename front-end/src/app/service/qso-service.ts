@@ -62,7 +62,7 @@ export class QsoService {
         );
     }
 
-    private handleError<T>(operation = 'operation', result?: T) {
+    private handleError<T>(operation: String, result?: T) {
         return (error: any): Observable<T> => {
             this.logger.log(`${operation} failed: ${error.message}`);
             return of(result as T);

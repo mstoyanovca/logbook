@@ -23,7 +23,7 @@ export class AuthenticationService {
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    login(email: string, password: string) {
+    login(email: string, password: string): Observable<User> {
         return this.http.post<User>(environment.apiUrl + "/login", {email, password}, httpOptions)
             .pipe(map(user => {
                 if (user && user.token) {
@@ -32,6 +32,10 @@ export class AuthenticationService {
                 }
                 return user;
             }));
+    }
+
+    changePassword(newPassword: string): Observable<string> {
+        return this.http.post(environment.apiUrl + "/changePassword", {newPassword}, {responseType: 'text'})
     }
 
     logout() {
