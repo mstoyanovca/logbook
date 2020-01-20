@@ -10,7 +10,8 @@ export class LoginComponent {
     authenticationError = '';
     loggedIn: boolean;
 
-    resetPasswordEmail: string;
+    forgotPasswordEmail: string;
+    forgotPasswordError: string;
 
     oldPassword: string;
     newPassword: string;
@@ -38,9 +39,20 @@ export class LoginComponent {
                 });
     }
 
-    resetPassword() {
-        this.logger.log('Password reset requested for email: ' + this.resetPasswordEmail);
-        document.getElementById('closeForgotPasswordModal').click();
+    forgotPassword() {
+        this.logger.log(`Password reset requested for email: ${this.forgotPasswordEmail}`);
+
+        this.authenticationService.forgotPassword(this.forgotPasswordEmail)
+            .subscribe(result => {
+                    if (result === "Success") {
+                        this.logger.log('Sent password reset link');
+                        document.getElementById('closeForgotPasswordModal').click();
+                    }
+                }, error => {
+                    this.logger.log(`Password reset request failed: ${error}`);
+                    this.forgotPasswordError = 'Password reset request failed';
+                }
+            );
     }
 
     changePassword() {
@@ -64,6 +76,10 @@ export class LoginComponent {
         this.authenticationService.logout();
         this.loggedIn = false;
         this.logger.log('Logged out');
+    }
+
+    resetForgotPasswordError() {
+        this.forgotPasswordError = '';
     }
 
     resetChangePasswordError() {

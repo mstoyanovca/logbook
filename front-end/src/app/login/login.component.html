@@ -64,7 +64,7 @@
     <button class="btn btn-link p-0" id="forgotPwdBtn" *ngIf="loggedIn" data-toggle="modal" data-target="#changePasswordModal" (click)="resetChangePasswordError()">
       Change password
     </button>
-    <button class="btn btn-link p-0" *ngIf="!loggedIn" data-toggle="modal" data-target="#forgotPasswordModal">Forgot password</button>
+    <button class="btn btn-link p-0" *ngIf="!loggedIn" data-toggle="modal" data-target="#forgotPasswordModal" (click)="resetForgotPasswordError()">Forgot password</button>
   </div>
 </div>
 
@@ -79,17 +79,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <form #resetPasswordForm="ngForm">
+        <form #forgotPasswordForm="ngForm">
           <div class="form-group">
-            <label for="resetPasswordEmail">Email address</label>
-            <input class="form-control" id="resetPasswordEmail" name="resetPasswordEmail" type="email" [(ngModel)]="resetPasswordEmail" placeholder="Enter email" required email>
+            <label for="forgotPasswordEmail">Email address</label>
+            <input class="form-control" id="forgotPasswordEmail" name="forgotPasswordEmail" type="email" [(ngModel)]="forgotPasswordEmail" required email>
             <small class="form-text text-muted">A password reset link will be sent</small>
+            <div class="form-text text-danger" id="forgotPasswordError">{{forgotPasswordError}}</div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" id="closeForgotPasswordModal" data-dismiss="modal">Close</button>
-        <button class="btn btn-primary" (click)="resetPassword()" [disabled]="!resetPasswordForm.form.valid">Reset</button>
+        <button class="btn btn-secondary" id="closeForgotPasswordModal" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" (click)="forgotPassword()" [disabled]="!forgotPasswordForm.form.valid">Submit</button>
       </div>
     </div>
   </div>

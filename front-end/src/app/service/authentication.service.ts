@@ -34,6 +34,10 @@ export class AuthenticationService {
             }));
     }
 
+    forgotPassword(forgotPasswordEmail: string): Observable<string> {
+        return this.http.post(environment.apiUrl + "/forgotPassword", {forgotPasswordEmail}, {responseType: 'text'})
+    }
+
     changePassword(newPassword: string): Observable<string> {
         return this.http.post(environment.apiUrl + "/changePassword", {newPassword}, {responseType: 'text'})
     }
