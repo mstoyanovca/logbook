@@ -21,7 +21,7 @@ class AuthenticationService @Inject()(config: Configuration) {
 
   private implicit val clock: Clock = Clock.systemUTC
 
-  def createJwt(user: User): String = {
+  def loginJwt(user: User): String = {
     Jwt.encode(
       JwtHeader(JwtAlgorithm.HS256).toJson,
       JwtClaim()
@@ -29,6 +29,22 @@ class AuthenticationService @Inject()(config: Configuration) {
         .about(user.id.get.toString)
         .to(audience)
         .expiresIn(expiration)
+        .startsNow
+        .issuedNow
+        .withId(UUID.randomUUID().toString)
+        .toJson,
+      secretKey,
+      algorithm)
+  }
+
+  def passwordResetJwt(user: User): String = {
+    Jwt.encode(
+      JwtHeader(JwtAlgorithm.HS256).toJson,
+      JwtClaim()
+        .by(issuer)
+        .about(user.id.get.toString)
+        .to(audience)
+        .expiresIn(5 * 60)
         .startsNow
         .issuedNow
         .withId(UUID.randomUUID().toString)

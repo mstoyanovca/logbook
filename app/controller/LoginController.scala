@@ -25,12 +25,27 @@ class LoginController @Inject()(cc: ControllerComponents,
           u = maybeUser match {
             case Some(u) =>
               u.password = None
-              u.token = Some(authService.createJwt(u))
+              u.token = Some(authService.loginJwt(u))
               Ok(Json.toJson(u)).as("application/json")
             case None => Unauthorized
           }
         } yield u
       })
+  }
+
+  def forgotPassword: Action[JsValue] = Action.async(parse.json) { implicit request =>
+    val forgotPasswordEmail: String = (request.body \ "forgotPasswordEmail").as[String]
+
+    for {
+      maybeUser <- userDao.findByEmail(forgotPasswordEmail)
+      u = maybeUser match {
+        case Some(u) =>
+          val passwordResetToken = authService.passwordResetJwt(u)
+          // TODO: call the email service to send an email with a password reset link
+          Ok("Success").as("text/plain")
+        case None => BadRequest("Error").as("text/plain")
+      }
+    } yield u
   }
 
   def changePassword: Action[JsValue] = authAction.async(parse.json) { implicit request =>

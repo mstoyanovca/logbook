@@ -1,4 +1,5 @@
 POST          /login                 controller.LoginController.login()
+POST          /forgotPassword        controller.LoginController.forgotPassword()
 POST          /changePassword        controller.LoginController.changePassword()
 
 GET           /qso                   controller.QsoController.findAll()

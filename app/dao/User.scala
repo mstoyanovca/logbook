@@ -42,6 +42,10 @@ class UserDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val d
     db.run(users.filter(_.id === id).result.headOption)
   }
 
+  def findByEmail(email: String): Future[Option[User]] = {
+    db.run(users.filter(_.email === email).result.headOption)
+  }
+
   def findByEmailAndPassword(user: User): Future[Option[User]] = {
     db.run(users.filter(_.email === user.email).filter(_.password === user.password).result.headOption)
   }
