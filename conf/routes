@@ -3,5 +3,6 @@ POST          /forgotPassword        controller.LoginController.forgotPassword()
 POST          /changePassword        controller.LoginController.changePassword()
 
 GET           /qso                   controller.QsoController.findAll()
+GET           /qso/requestQsl        controller.QsoController.findByDateTimeAndCallsign(dateTime: String, callsign: String)
 POST          /qso                   controller.QsoController.add()
 DELETE        /qso/:id               controller.QsoController.delete(id: String)

@@ -1,5 +1,8 @@
 package controller
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 import authentication.AuthenticationAction
 import dao.{Qso, QsoDao}
 import javax.inject.Inject
@@ -14,8 +17,17 @@ class QsoController @Inject()(cc: ControllerComponents,
                               qsoDao: QsoDao) extends AbstractController(cc) {
 
   def findAll: Action[AnyContent] = authAction.async { implicit authenticationRequest =>
-    // TODO make it findAllByUserId
-    qsoDao.findAll.map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
+    val userId: Long = authenticationRequest.claim.subject.get.toLong
+    qsoDao.findAllByUserId(userId).map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
+  }
+
+  def findByDateTimeAndCallsign(dateTime: String, callsign: String): Action[AnyContent] = authAction.async { implicit authenticationRequest =>
+    val userId: Long = authenticationRequest.claim.subject.get.toLong
+    qsoDao.findByDateTimeAndCallsign(
+      userId,
+      LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("MM/dd/yyyy, HH:mm:ss")),
+      callsign)
+      .map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
   }
 
   def add: Action[JsValue] = authAction.async(parse.json) { implicit authenticationRequest =>

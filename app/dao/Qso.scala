@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import com.google.inject.Inject
 import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.json.{Json, Reads, Writes}
 import slick.jdbc.JdbcProfile
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.Tag
@@ -27,39 +27,21 @@ case class Qso(var id: Option[Long],
                notes: Option[String] = None)
 
 object Qso {
-
-  import play.api.http._
-  import play.api.libs.functional.syntax._
-  import play.api.mvc._
-
-  implicit val qsoReads: Reads[Qso] = (
-    (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "userId").readNullable[Long] and
-      (JsPath \ "dateTime").read[String].map[LocalDateTime](s => LocalDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME)) and
-      (JsPath \ "callsign").read[String] and
-      (JsPath \ "frequency").read[String] and
-      (JsPath \ "mode").read[String] and
-      (JsPath \ "rstSent").read[String] and
-      (JsPath \ "rstReceived").readNullable[String] and
-      (JsPath \ "power").readNullable[String] and
-      (JsPath \ "name").readNullable[String] and
-      (JsPath \ "qth").readNullable[String] and
-      (JsPath \ "notes").readNullable[String]
-    ) (Qso.apply _)
-
+  implicit val qsoReads: Reads[Qso] = Json.reads[Qso]
   implicit val qsoWrites: Writes[Qso] = Json.writes[Qso]
-
-  implicit def writeable(implicit codec: Codec): Writeable[Qso] = Writeable(data => codec.encode(data.toString))
-
-  implicit def contentType(implicit codec: Codec): ContentTypeOf[Qso] = ContentTypeOf(Some(ContentTypes.TEXT))
 }
 
 class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
+  private val localDateTimeToMySQLDateTimeMapper: BaseColumnType[LocalDateTime] = MappedColumnType.base[LocalDateTime, String](
+    ldt => ldt.format(DateTimeFormatter.ISO_DATE_TIME),
+    s => LocalDateTime.parse(s.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME)
+  )
+
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
   def userId = column[Long]("user_id")
 
-  def dateTime = column[String]("date_time")
+  def dateTime = column[LocalDateTime]("date_time")(localDateTimeToMySQLDateTimeMapper)
 
   def callsign = column[String]("callsign")
 
@@ -79,48 +61,19 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
 
   def notes = column[String]("notes")
 
-  def create: (Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String]) => Qso =
-    (id: Option[Long],
-     userId: Option[Long],
-     dateTime: String,
-     callsign: String,
-     frequency: String,
-     mode: String,
-     rstSent: String,
-     rstReceived: Option[String],
-     power: Option[String],
-     name: Option[String],
-     qth: Option[String],
-     notes: Option[String]) =>
-      Qso(id,
-        userId,
-        LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-        callsign,
-        frequency,
-        mode,
-        rstSent,
-        rstReceived,
-        power,
-        name,
-        qth,
-        notes)
-
-  def destroy(qso: Qso): Option[(Option[Long], Option[Long], String, String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] =
-    Some(qso.id,
-      qso.userId,
-      qso.dateTime.format(DateTimeFormatter.ISO_DATE_TIME),
-      qso.callsign,
-      qso.frequency,
-      qso.mode,
-      qso.rstSent,
-      qso.rstReceived,
-      qso.power,
-      qso.name,
-      qso.qth,
-      qso.notes)
-
-  override def * = (id.?, userId.?, dateTime, callsign, frequency, mode, rstSent, rstReceived.?, power.?, name.?, qth.?, notes.?) <>
-    (create.tupled, destroy)
+  override def * = (
+    id.?,
+    userId.?,
+    dateTime,
+    callsign,
+    frequency,
+    mode,
+    rstSent,
+    rstReceived.?,
+    power.?,
+    name.?,
+    qth.?,
+    notes.?) <> ((Qso.apply _).tupled, Qso.unapply)
 }
 
 class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val dbConfigProvider: DatabaseConfigProvider)
@@ -133,6 +86,20 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
 
   def findById(id: Long): Future[Option[Qso]] = {
     db.run(qsos.filter(_.id === id).result.headOption)
+  }
+
+  def findAllByUserId(userId: Long): Future[Seq[Qso]] = {
+    db.run(qsos.filter(_.userId === userId).result)
+  }
+
+  def findByDateTimeAndCallsign(userId: Long, dateTime: LocalDateTime, callsign: String): Future[Seq[Qso]] = {
+    db.run(
+      qsos
+        .filter(_.userId === userId)
+        .filter(_.dateTime === dateTime)
+        .filter(_.callsign === callsign)
+        .result
+    )
   }
 
   def findAll: Future[Seq[Qso]] = {
