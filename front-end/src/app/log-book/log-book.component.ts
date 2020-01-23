@@ -33,7 +33,7 @@ export class LogBookComponent implements OnInit {
 
     monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    qsoToDelete = new QSO(null, '', '', '', '', '');
+    qsoToDelete = new QSO(null, '', '', '', '');
 
     constructor(private qsoService: QsoService) {
     }

@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {QSO} from '../model/qso';
 import {QsoService} from '../service/qso-service';
 import {Router} from '@angular/router';
 import {NGXLogger} from 'ngx-logger';
+import {QsoDate} from "../model/qso-date";
+import {QsoTime} from "../model/qso-time";
 
 @Component({
     selector: 'app-qsl',
@@ -10,8 +12,10 @@ import {NGXLogger} from 'ngx-logger';
     styleUrls: ['./request-qsl.component.css']
 })
 
-export class RequestQslComponent implements OnInit {
+export class RequestQslComponent {
     qso = new QSO(null, '', '', '', '');
+    qsoDate: QsoDate;
+    qsoTime: QsoTime;
 
     constructor(
         private qsoService: QsoService,
@@ -19,22 +23,26 @@ export class RequestQslComponent implements OnInit {
         private logger: NGXLogger) {
     }
 
-    ngOnInit() {
-    }
-
     onSubmit() {
         this.logger.log('Requesting a QSL card:');
-        this.logger.log('dateTime=' + JSON.stringify(this.qso.dateTime));
-        this.logger.log('callsign=' + this.qso.callsign);
+        this.logger.log('date = ' + JSON.stringify(this.qsoDate));
+        this.logger.log('time = ' + JSON.stringify(this.qsoTime));
+        this.logger.log('callsign = ' + this.qso.callsign);
 
-        this.qsoService.findByDateTimeAndCallsign(this.qso.dateTime, this.qso.callsign).subscribe(result => {
+        const dateTime = new Date(this.qsoDate.year,
+            this.qsoDate.month - 1,
+            this.qsoDate.day,
+            this.qsoTime.hour,
+            this.qsoTime.minute)
+            .toLocaleString("en-US", {hour12: false});
+
+        this.qsoService.findByDateTimeAndCallsign(dateTime, this.qso.callsign).subscribe(result => {
             this.qso = result[0];
 
-            this.logger.log('Found a QSO:');
-            this.logger.log(this.qso);
+            this.logger.log(`Found a QSO: ${JSON.stringify(this.qso)}`);
             this.logger.log('Generating pdf ...');
 
             this.router.navigateByUrl('qsl');
-        });
+        }, error => this.logger.log("error = " + error));
     }
 }

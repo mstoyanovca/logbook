@@ -34,8 +34,8 @@ export class QsoService {
         )
     }
 
-    findByDateTimeAndCallsign(dateTime: Date, callsign: string): Observable<QSO[]> {
-        const url = `${this.qsosUrl}?date=${dateTime}&callsign=${callsign}`;
+    findByDateTimeAndCallsign(dateTime: string, callsign: string): Observable<QSO[]> {
+        const url = `${this.qsosUrl}/requestQsl?dateTime=${dateTime}&callsign=${callsign}`;
 
         return this.http.get<QSO[]>(url).pipe(
             tap(_ => this.logger.log(`findByDateTimeAndCallsign(${dateTime}, ${callsign})`)),
