@@ -15,6 +15,7 @@ export class LogBookComponent implements OnInit {
     newQso: QSO;
     qsoDate: QsoDate;
     qsoTime: QsoTime;
+    qsoToDelete = new QSO(null, '', '', '', '');
     qsosFromDB: QSO[] = [];
     qsos: QSO[] = [];
 
@@ -26,30 +27,26 @@ export class LogBookComponent implements OnInit {
     frequencyImagePath = '';
 
     filter = '';
+    monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     page = 1;
     pageSize = 10;
     collectionSize = 0;
-
-    monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    qsoToDelete = new QSO(null, '', '', '', '');
 
     constructor(private qsoService: QsoService) {
     }
 
     ngOnInit() {
         const date = new Date();
-        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes());
         this.qsoDate = {
-            year: utcDate.getFullYear(),
-            month: utcDate.getMonth() + 1,
-            day: utcDate.getDate()
+            year: date.getUTCFullYear(),
+            month: date.getUTCMonth() + 1,
+            day: date.getUTCDate()
         };
-        this.qsoTime = {hour: utcDate.getHours(), minute: utcDate.getMinutes()};
+        this.qsoTime = {hour: date.getUTCHours(), minute: date.getUTCMinutes()};
 
         this.newQso = new QSO(
-            utcDate,
+            null,
             '',
             '',
             'SSB',

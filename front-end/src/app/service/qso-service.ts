@@ -46,8 +46,8 @@ export class QsoService {
     add(qso: QSO): Observable<QSO> {
         return this.http.post<QSO>(this.qsosUrl, qso, httpOptions).pipe(
             tap(response => {
+                this.logger.log(`Added a QSO: ${JSON.stringify(response)}`);
                 response.dateTime = new Date(response.dateTime);
-                this.logger.log(`Added a new qso: ${JSON.stringify(response)}`);
             }),
             catchError(this.handleError<QSO>('add', null))
         );
