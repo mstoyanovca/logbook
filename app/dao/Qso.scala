@@ -32,7 +32,7 @@ object Qso {
 }
 
 class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
-  private val localDateTimeToMySQLDateTimeMapper: BaseColumnType[LocalDateTime] = MappedColumnType.base[LocalDateTime, String](
+  private val localDateTimeToStringMapper: BaseColumnType[LocalDateTime] = MappedColumnType.base[LocalDateTime, String](
     ldt => ldt.format(DateTimeFormatter.ISO_DATE_TIME),
     s => LocalDateTime.parse(s.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME)
   )
@@ -41,7 +41,7 @@ class QsoTableDef(tag: Tag) extends Table[Qso](tag, "qso") {
 
   def userId = column[Long]("user_id")
 
-  def dateTime = column[LocalDateTime]("date_time")(localDateTimeToMySQLDateTimeMapper)
+  def dateTime = column[LocalDateTime]("date_time")(localDateTimeToStringMapper)
 
   def callsign = column[String]("callsign")
 
@@ -85,14 +85,17 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
   val qsos = TableQuery[QsoTableDef]
 
   def findById(id: Long): Future[Option[Qso]] = {
+    logger.info(s"findById($id)")
     db.run(qsos.filter(_.id === id).result.headOption)
   }
 
   def findAllByUserId(userId: Long): Future[Seq[Qso]] = {
+    logger.info(s"findAllByUserId($userId)")
     db.run(qsos.filter(_.userId === userId).result)
   }
 
   def findByDateTimeAndCallsign(userId: Long, dateTime: LocalDateTime, callsign: String): Future[Seq[Qso]] = {
+    logger.info(s"findByDateTimeAndCallsign(userId=$userId, dateTime=$dateTime, callsign=$callsign)")
     db.run(
       qsos
         .filter(_.userId === userId)
@@ -103,13 +106,14 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
   }
 
   def findAll: Future[Seq[Qso]] = {
+    logger.info(s"findAll()")
     db.run(qsos.result)
   }
 
   def add(qso: Qso): Future[Qso] = {
     for {
       qso <- db.run(qsos returning qsos.map(_.id) into ((qso, id) => qso.copy(id = Some(id))) += qso)
-      _ = logger.info(s"Added a new QSO: $qso" + qso)
+      _ = logger.info(s"Added a QSO: $qso")
     } yield qso
   }
 

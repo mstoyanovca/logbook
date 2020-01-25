@@ -17,14 +17,13 @@ class QsoController @Inject()(cc: ControllerComponents,
                               qsoDao: QsoDao) extends AbstractController(cc) {
 
   def findAll: Action[AnyContent] = authAction.async { implicit authenticationRequest =>
-    val userId: Long = authenticationRequest.claim.subject.get.toLong
-    qsoDao.findAllByUserId(userId).map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
+    qsoDao.findAllByUserId(authenticationRequest.claim.subject.get.toLong)
+      .map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
   }
 
   def findByDateTimeAndCallsign(dateTime: String, callsign: String): Action[AnyContent] = authAction.async { implicit authenticationRequest =>
-    val userId: Long = authenticationRequest.claim.subject.get.toLong
     qsoDao.findByDateTimeAndCallsign(
-      userId,
+      authenticationRequest.claim.subject.get.toLong,
       LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("MM/dd/yyyy, HH:mm:ss")),
       callsign)
       .map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
