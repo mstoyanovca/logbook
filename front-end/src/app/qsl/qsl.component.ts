@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {QSO} from '../model/qso';
+import {Component} from '@angular/core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {NGXLogger} from 'ngx-logger';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-pdf',
@@ -10,20 +10,31 @@ import {NGXLogger} from 'ngx-logger';
     styleUrls: ['./qsl.component.css']
 })
 
-export class QslComponent implements OnInit {
-    qso: QSO;
+export class QslComponent {
+    state: { callsign: string, date: string, utc: string, frequency: string, mode: string, rst: string };
 
-    constructor(private logger: NGXLogger) {
-    }
-
-    ngOnInit() {
-        const now = new Date();
-        const dateTime = new Date(now.getFullYear(), now.getMonth(), now.getDay());
-        this.qso = new QSO(dateTime, '', '', 'SSB', '');
+    constructor(
+        private router: Router,
+        private logger: NGXLogger) {
+        this.state = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state as {
+            callsign: string,
+            date: string,
+            utc: string,
+            frequency: string,
+            mode: string,
+            rst: string
+        } : {
+            callsign: "",
+            date: "",
+            utc: "",
+            frequency: "",
+            mode: "",
+            rst: ""
+        };
     }
 
     download() {
-        this.logger.log('Generating pdf ...');
+        this.logger.log('Downloading pdf ...');
 
         html2canvas(document.getElementById('qsl')).then(canvas => {
             const pdf = new jsPDF('l', 'in', 'a6');
