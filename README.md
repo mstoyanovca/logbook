@@ -8,3 +8,10 @@ Run configuration in dev mode:
 -XX:+CMSClassUnloadingEnabled
 -XX:MaxPermSize=256M
 -Dlogger.resource=logback-dev.xml
+
+TODOs:
+- add an edit QSO modal in the logbook component
+- add tests
+- deploy to AWS
+- implement a service to email a password reset link with a token from the AWS account 
+- implement a guarded by the AuthenticationAction route to validate the token, and open a new password form

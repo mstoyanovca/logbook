@@ -24,7 +24,7 @@ class QsoController @Inject()(cc: ControllerComponents,
   def findByDateTimeAndCallsign(dateTime: String, callsign: String): Action[AnyContent] = authAction.async { implicit authenticationRequest =>
     qsoDao.findByDateTimeAndCallsign(
       authenticationRequest.claim.subject.get.toLong,
-      LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("MM/dd/yyyy, HH:mm:ss")),
+      LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_DATE_TIME),
       callsign)
       .map(qsos => Ok(Json.toJson(qsos)).as("application/json"))
   }

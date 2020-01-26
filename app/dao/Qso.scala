@@ -1,7 +1,7 @@
 package dao
 
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.{Duration, LocalDateTime}
 
 import com.google.inject.Inject
 import play.api.Logger
@@ -96,13 +96,13 @@ class QsoDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val db
 
   def findByDateTimeAndCallsign(userId: Long, dateTime: LocalDateTime, callsign: String): Future[Seq[Qso]] = {
     logger.info(s"findByDateTimeAndCallsign(userId=$userId, dateTime=$dateTime, callsign=$callsign)")
-    db.run(
-      qsos
-        .filter(_.userId === userId)
-        .filter(_.dateTime === dateTime)
-        .filter(_.callsign === callsign)
-        .result
-    )
+    for {
+      all <- db.run(qsos.result)
+      result = all
+        .filter(_.userId.contains(userId))
+        .filter(_.callsign == callsign)
+        .filter(qso => Math.abs(Duration.between(qso.dateTime, dateTime).toMinutes) <= 15)
+    } yield result
   }
 
   def findAll: Future[Seq[Qso]] = {
