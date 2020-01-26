@@ -84,9 +84,11 @@ export class LogBookComponent implements OnInit {
         });
     }
 
-    private onSubmit() {
+    private addQso() {
         this.add(this.newQso);
     }
+
+    // TODO: implement an edit a QSO modal
 
     private setQsoToDelete(qso: QSO): void {
         this.qsoToDelete = qso;
