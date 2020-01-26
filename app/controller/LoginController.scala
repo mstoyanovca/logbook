@@ -42,8 +42,10 @@ class LoginController @Inject()(cc: ControllerComponents,
         case Some(u) =>
           val passwordResetToken = authService.passwordResetJwt(u)
           // TODO:
+          // publish to AWS
+          // obtain an email account from AWS
           // implement an email service to send an email with a password reset link
-          // implement a guarded by the AuthenticationAction route to validate the token, and open a password change form
+          // implement a guarded by the AuthenticationAction route to validate the token, and open a new password form
           Ok("Success").as("text/plain")
         case None => BadRequest("Error").as("text/plain")
       }
