@@ -1,12 +1,10 @@
 import {async, TestBed} from '@angular/core/testing';
 import {AppComponent} from './app.component';
-import {Routes} from "@angular/router";
 import {LoginComponent} from "./login/login.component";
 import {SignalGeneratorComponent} from "./signal-generator/signal-generator.component";
 import {VfoComponent} from "./vfo/vfo.component";
 import {TransceiverComponent} from "./transceiver/transceiver.component";
 import {LogBookComponent} from "./log-book/log-book.component";
-import {AuthenticationGuard} from "./authentication-guard/authentication.guard";
 import {RequestQslComponent} from "./request-qsl/request-qsl.component";
 import {QslComponent} from "./qsl/qsl.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
@@ -22,21 +20,6 @@ import {JwtInterceptor} from "./interceptor/jwt.interceptor";
 import {ErrorInterceptor} from "./interceptor/error.interceptor";
 
 describe('AppComponent', () => {
-    const routes: Routes = [
-        {path: 'login', component: LoginComponent},
-        {path: 'signal-generator', component: SignalGeneratorComponent},
-        {path: 'vfo', component: VfoComponent},
-        {path: 'transceiver', component: TransceiverComponent},
-        {path: 'log-book', component: LogBookComponent, canActivate: [AuthenticationGuard]},
-        {path: 'request-qsl', component: RequestQslComponent},
-        {path: 'qsl', component: QslComponent},
-        {
-            path: '',
-            redirectTo: '/login',
-            pathMatch: 'full'
-        },
-        {path: '**', component: PageNotFoundComponent},
-    ];
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
