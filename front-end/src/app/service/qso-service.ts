@@ -12,10 +12,7 @@ const httpOptions = {
     })
 };
 
-@Injectable({
-    providedIn: 'root'
-})
-
+@Injectable({providedIn: 'root'})
 export class QsoService {
     private qsosUrl = 'qso';
 

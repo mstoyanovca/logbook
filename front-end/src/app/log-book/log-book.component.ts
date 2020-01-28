@@ -108,7 +108,7 @@ export class LogBookComponent implements OnInit {
         }
     };
 
-    private sortByCallsign = (): void => {
+    sortByCallsign = (): void => {
         this.frequencyDirection = Direction.None;
         this.frequencyImagePath = '';
         if (this.callsignDirection === Direction.None) {
@@ -132,7 +132,7 @@ export class LogBookComponent implements OnInit {
         }
     };
 
-    private sortByFrequency = (): void => {
+    sortByFrequency = (): void => {
         this.callsignDirection = Direction.None;
         this.callsignImagePath = '';
         if (this.frequencyDirection === Direction.None) {

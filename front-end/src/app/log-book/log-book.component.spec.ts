@@ -3,9 +3,10 @@ import {LogBookComponent} from './log-book.component';
 import {FormsModule} from '@angular/forms';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {NgbDatepickerModule, NgbPaginationModule, NgbTimepickerModule} from '@ng-bootstrap/ng-bootstrap';
-import {LoggerConfig, NGXLogger, NGXLoggerHttpService, NGXLoggerHttpServiceMock} from 'ngx-logger';
+import {LoggerConfig, LoggerTestingModule, NGXLogger} from 'ngx-logger';
 import {By} from '@angular/platform-browser';
 import {QSO} from '../model/qso';
+import {QsoService} from "../service/qso-service";
 
 describe('LogBookComponent', () => {
     let component: LogBookComponent;
@@ -19,17 +20,28 @@ describe('LogBookComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [LogBookComponent],
-            imports: [FormsModule, NgbTimepickerModule, NgbDatepickerModule, NgbPaginationModule, HttpClientTestingModule],
-            providers: [NGXLogger, {provide: NGXLoggerHttpService, useClass: NGXLoggerHttpServiceMock}, LoggerConfig]
-        }).compileComponents();
+            declarations: [
+                LogBookComponent
+            ],
+            imports: [
+                FormsModule,
+                NgbTimepickerModule,
+                NgbDatepickerModule,
+                NgbPaginationModule,
+                HttpClientTestingModule,
+                LoggerTestingModule
+            ],
+            providers: [
+                NGXLogger,
+                LoggerConfig,
+                QsoService
+            ]
+        }).compileComponents().then(() => {
+            fixture = TestBed.createComponent(LogBookComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
     }));
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(LogBookComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
 
     it('should create', () => {
         expect(component).toBeTruthy();
@@ -61,12 +73,15 @@ describe('LogBookComponent', () => {
         expect(component.compareDateTime(qso1, qso2)).toBeLessThan(0);
     });
 
-    // TODO turn into frequency:
-    /*it('should compare bands ascending', () => {
-        expect(component.compareBandAsc(qso1, qso2)).toBeLessThan(0);
+    it('should sort by callsign', () => {
+        component.qsosFromDB = [qso2, qso1];
+        component.sortByCallsign();
+        expect(component.qsos).toEqual([qso1, qso2]);
     });
 
-    it('should compare bands descending', () => {
-        expect(component.compareBandDesc(qso1, qso2)).toBeGreaterThan(0);
-    });*/
+    it('should sort by frequency', () => {
+        component.qsosFromDB = [qso2, qso1];
+        component.sortByFrequency();
+        expect(component.qsos).toEqual([qso1, qso2]);
+    });
 });
