@@ -1,13 +1,15 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {QslComponent} from './qsl.component';
 import {LoggerConfig, LoggerTestingModule, NGXLogger} from 'ngx-logger';
 import {RouterTestingModule} from "@angular/router/testing";
+import {Router} from "@angular/router";
 
 describe('PdfComponent', () => {
+    let router: Router;
     let component: QslComponent;
     let fixture: ComponentFixture<QslComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
                 QslComponent
@@ -20,19 +22,35 @@ describe('PdfComponent', () => {
                 NGXLogger,
                 LoggerConfig
             ]
-        }).compileComponents().then(() => {
-            fixture = TestBed.createComponent(QslComponent);
-            component = fixture.componentInstance;
-            fixture.detectChanges();
         });
-    }));
+
+        router = TestBed.get(Router);
+        router.initialNavigation();
+
+        fixture = TestBed.createComponent(QslComponent);
+        component = fixture.componentInstance;
+
+        spyOn(router, 'getCurrentNavigation').and.returnValues({
+            'extras': {
+                state: {
+                    callsign: "",
+                    date: "",
+                    utc: "",
+                    frequency: "",
+                    mode: "",
+                    rst: ""
+                }
+            }
+        });
+
+        fixture.detectChanges();
+    });
 
     afterEach(() => {
         TestBed.resetTestingModule();
     });
 
     it('should create', async () => {
-        let state = {callsign: "", date: "", utc: "", frequency: "", mode: "", rst: ""};
         expect(component).toBeTruthy();
     });
 
