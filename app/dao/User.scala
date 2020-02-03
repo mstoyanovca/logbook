@@ -10,7 +10,7 @@ import slick.lifted.Tag
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class User(var id: Option[Long], email: String, var password: Option[String], var token: Option[String])
+case class User(var id: Option[Long], email: String, var password: Option[String] = None, var token: Option[String] = None)
 
 object User {
   implicit val userReads: Reads[User] = Json.reads[User]
@@ -47,6 +47,7 @@ class UserDao @Inject()(@play.db.NamedDatabase(value = "va3aui") protected val d
   }
 
   def findByEmailAndPassword(user: User): Future[Option[User]] = {
+    // implement BCrypt.checkPassword(password, user.password) to persist encrypted pwd in the DB
     db.run(users.filter(_.email === user.email).filter(_.password === user.password).result.headOption)
   }
 
