@@ -1,7 +1,6 @@
 POST          /login                 controller.LoginController.login()
 POST          /forgotPassword        controller.LoginController.forgotPassword()
 POST          /changePassword        controller.LoginController.changePassword()
-POST          /index                 controller.LoginController.index()
 
 GET           /qso                   controller.QsoController.findAll()
 GET           /qso/requestQsl        controller.QsoController.findByDateTimeAndCallsign(dateTime: String, callsign: String)

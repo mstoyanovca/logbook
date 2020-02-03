@@ -64,8 +64,4 @@ class LoginController @Inject()(cc: ControllerComponents,
       }
     } yield r
   }
-
-  def index(): Action[AnyContent] = Action {
-    Ok("ok")
-  }
 }
