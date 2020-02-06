@@ -68,9 +68,10 @@ class LoginControllerSpec extends PlaySpec with Results with GuiceOneServerPerTe
 
   "LoginController on changePassword" should {
     "return a user with a token" in {
-      val wsClient = app.injector.instanceOf[WSClient]
       val service = app.injector.instanceOf[AuthenticationService]
       val jwtToken = service.passwordResetJwt(User(Some(1L), "a@a.com", Some("password")))
+
+      val wsClient = app.injector.instanceOf[WSClient]
       val url = s"http://localhost:$port/changePassword"
 
       val response = await(
