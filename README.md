@@ -1,2 +1,1 @@
-# login
-Spring Boot with Angular
+Spring Boot with Angular SPA demo.
