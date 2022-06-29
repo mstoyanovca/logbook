@@ -6,6 +6,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { LogbookComponent } from './logbook/logbook.component';
 import { ProfileComponent } from './profile/profile.component';
+import { UserService } from './service/user.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,9 @@ import { ProfileComponent } from './profile/profile.component';
     AppRoutingModule,
     NgbModule
   ],
-  providers: [],
+  providers: [
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
