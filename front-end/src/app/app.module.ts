@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { LogbookComponent } from './logbook/logbook.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './service/user.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { UserService } from './service/user.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ],
   providers: [
     UserService
