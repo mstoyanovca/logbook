@@ -11,10 +11,12 @@ const baseUrl = 'http://localhost:4200/user';
 export class UserService {
   private userSubject: BehaviorSubject<User>;
   public user: Observable<User>;
+  private refreshTokenTimeout;
 
   constructor(private router: Router, private httpClient: HttpClient) {
     this.userSubject = new BehaviorSubject<User>(new User());
     this.user = this.userSubject.asObservable();
+    this.refreshTokenTimeout = 0;
   }
 
   public get userValue(): User {
@@ -45,8 +47,6 @@ export class UserService {
         return user;
     }));
   }
-
-  private refreshTokenTimeout = 0;
 
   private startRefreshTokenTimer() {
     // parse json object from base64 encoded jwt token

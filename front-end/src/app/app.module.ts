@@ -7,7 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { LogbookComponent } from './logbook/logbook.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './service/user.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from './security/errorinterceptor';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    UserService
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
