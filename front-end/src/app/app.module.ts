@@ -8,7 +8,8 @@ import { LogbookComponent } from './logbook/logbook.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './service/user.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ErrorInterceptor } from './security/errorinterceptor';
+import { JwtInterceptor } from './security/jwt.interceptor';
+import { ErrorInterceptor } from './security/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ErrorInterceptor } from './security/errorinterceptor';
     HttpClientModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
