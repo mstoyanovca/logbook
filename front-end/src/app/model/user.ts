@@ -3,6 +3,7 @@ export class User {
     firstName: string;
     lastName: string;
     email: string;
+    password: string;
     jwtToken?: string;
 
     constructor() {
@@ -10,6 +11,7 @@ export class User {
       this.firstName = "";
       this.lastName = "";
       this.email = "";
+      this.password = "";
       this.jwtToken = "";
     }
 }

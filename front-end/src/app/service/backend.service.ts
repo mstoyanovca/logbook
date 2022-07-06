@@ -51,7 +51,7 @@ export class BackendService implements HttpInterceptor {
 
       function authenticate() {
         const { email, password } = body;
-        const user = user.find(x => x.email === email && x.password === password && x.isVerified);
+        const user: User = user.find(x => x.email === email && x.password === password && x.isVerified);
 
         if (!user) return error('Invalid email or password');
 
@@ -93,14 +93,14 @@ export class BackendService implements HttpInterceptor {
         const user = body;
 
         if (user.find(x => x.email === user.email)) {
-          setTimeout(() => {
+          /* setTimeout(() => {
             alertService.info(`
               <h4>Email Already Registered</h4>
               <p>Your email ${user.email} is already registered.</p>
               <p>If you don't know your password please visit the <a href="${location.origin}/user/forgot-password">forgot password</a> page.</p>
               <div><strong>NOTE:</strong> The fake backend displayed this "email" so you can test without an api. A real backend would send a real email.</div>
               `, { autoClose: false });
-          }, 1000);
+          }, 1000); */
 
           return ok();
         }
@@ -119,7 +119,7 @@ export class BackendService implements HttpInterceptor {
         user.push(user);
         localStorage.setItem(userKey, JSON.stringify(user));
 
-        setTimeout(() => {
+        /* setTimeout(() => {
           const verifyUrl = `${location.origin}/user/verify-email?token=${user.verificationToken}`;
           alertService.info(`
             <h4>Verification Email</h4>
@@ -128,7 +128,7 @@ export class BackendService implements HttpInterceptor {
             <p><a href="${verifyUrl}">${verifyUrl}</a></p>
             <div><strong>NOTE:</strong> The fake backend displayed this "email" so you can test without an api. A real backend would send a real email.</div>
             `, { autoClose: false });
-        }, 1000);
+        }, 1000); */
 
         return ok();
       }
@@ -154,7 +154,7 @@ export class BackendService implements HttpInterceptor {
         user.resetTokenExpires = new Date(Date.now() + 15*60*1000).toISOString();
         localStorage.setItem(userKey, JSON.stringify(user));
 
-        setTimeout(() => {
+        /* setTimeout(() => {
           const resetUrl = `${location.origin}/user/reset-password?token=${user.resetToken}`;
           alertService.info(`
             <h4>Reset Password Email</h4>
@@ -162,7 +162,7 @@ export class BackendService implements HttpInterceptor {
             <p><a href="${resetUrl}">${resetUrl}</a></p>
             <div><strong>NOTE:</strong> The fake backend displayed this "email" so you can test without an api. A real backend would send a real email.</div>
             `, { autoClose: false });
-          }, 1000);
+          }, 1000); */
 
           return ok();
         }
@@ -346,7 +346,7 @@ export class BackendService implements HttpInterceptor {
       }
   }
 
-  export let backendService = {
+  export let backendProvider = {
       provide: HTTP_INTERCEPTORS,
       useClass: BackendService,
       multi: true
