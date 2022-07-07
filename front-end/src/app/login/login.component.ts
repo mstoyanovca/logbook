@@ -1,41 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import {NgForm} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { UserService } from '../service/user.service';
 import { User } from '../model/user';
 
 @Component({ selector: 'app-login', templateUrl: './login.component.html' })
-export class LoginComponent implements OnInit {
-  // loginForm: FormGroup;
+export class LoginComponent {
   submitted = false;
   loading = false;
-  user: User;
+  user = new User();
 
-  // constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private userService: UserService) {
-  constructor() {
-    this.user = new User();
-    this.user.email = "mstoyanovca@gmail.com";
-    this.user.password = "password";
+  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) {
+
   }
 
-  ngOnInit() {
-   /*  this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    }); */
-  }
-
-  // get f() { return this.form.controls; }
-
-  onSubmit() {
+  onSubmit(loginForm: NgForm) {
+    const user: User = loginForm.value;
     this.submitted = true;
-    /* if (this.form.invalid) {
+    if (loginForm.invalid) {
+      console.warn("loginForm is invalid")
       return;
     }
     this.loading = true;
 
-    this.userService.login(this.f.email.value, this.f.password.value).pipe(first()).subscribe({
+    this.userService.login(this.user.email, this.user.password).pipe(first()).subscribe({
       next: () => {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.router.navigateByUrl(returnUrl);
@@ -44,6 +33,6 @@ export class LoginComponent implements OnInit {
         console.error(error)
         this.loading = false;
       }
-    }); */
+    });
   }
 }
