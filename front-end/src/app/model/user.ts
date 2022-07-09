@@ -1,7 +1,5 @@
 export class User {
     id: string;
-    firstName: string;
-    lastName: string;
     email: string;
     password: string;
     verificationToken: string;
@@ -13,8 +11,6 @@ export class User {
 
     constructor() {
       this.id = "";
-      this.firstName = "";
-      this.lastName = "";
       this.email = "";
       this.password = "";
       this.verificationToken = "";

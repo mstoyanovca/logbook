@@ -276,8 +276,8 @@ export class BackendService implements HttpInterceptor {
         }
 
         function basicDetails(user: User) {
-          const { id, firstName, lastName, email, isVerified } = user;
-          return { id, firstName, lastName, email, isVerified };
+          const { id, email, isVerified } = user;
+          return { id, email, isVerified };
         }
 
         function isAuthenticated() {

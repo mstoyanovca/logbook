@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <form class="mt-4" (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+  <form class="mt-4" (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
     <div class="row mb-3">
       <div class="col-lg-2">
         <label class="form-label" for="email">Email</label>
@@ -27,11 +27,9 @@
     </div>
     <div class="row mb-3">
       <div class="col-lg-4 offset-lg-2">
-          <button class="btn btn-primary btn-sm" type="submit" [disabled]="loginForm.invalid">
-            <i class="bi bi-box-arrow-in-right"></i> Login <span class="spinner-border spinner-border-sm mr-1" *ngIf="loading"></span>
-          </button>
-          <a class="btn btn-link p-1 float-end" routerLink="/register">Register</a>
-          <a class="btn btn-link p-1 float-end" routerLink="/forgot-password">Forgot Password</a>
+        <button class="btn btn-primary btn-sm" type="submit" [disabled]="registerForm.invalid">
+          <i class="bi bi-person-plus"></i> Register <span class="spinner-border spinner-border-sm mr-1" *ngIf="loading"></span>
+        </button>
       </div>
     </div>
   </form>

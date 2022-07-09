@@ -13,13 +13,15 @@ import { ErrorInterceptor } from './security/error.interceptor';
 import { FormsModule } from '@angular/forms';
 import { backendProvider } from './service/backend.service';
 import { CommonModule } from '@angular/common';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LogbookComponent,
-    ProfileComponent
+    ProfileComponent,
+    RegisterComponent
   ],
   imports: [
     CommonModule,

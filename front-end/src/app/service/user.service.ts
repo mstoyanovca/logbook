@@ -48,6 +48,10 @@ export class UserService {
     }));
   }
 
+  register(user: User) {
+    return this.httpClient.post(`${baseUrl}/register`, user);
+  }
+
   private startRefreshTokenTimer() {
     // parse json object from base64 encoded jwt token
     const jwtToken = JSON.parse(atob(this.userValue.jwtToken!.split('.')[1]));
