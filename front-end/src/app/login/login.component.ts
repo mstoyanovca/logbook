@@ -7,7 +7,6 @@ import { User } from '../model/user';
 
 @Component({ selector: 'app-login', templateUrl: './login.component.html' })
 export class LoginComponent {
-  submitted = false;
   loading = false;
   user = new User();
 
@@ -15,9 +14,7 @@ export class LoginComponent {
 
   onSubmit(loginForm: NgForm) {
     const user: User = loginForm.value;
-    this.submitted = true;
     if (loginForm.invalid) {
-      console.warn("loginForm is invalid")
       return;
     }
     this.loading = true;

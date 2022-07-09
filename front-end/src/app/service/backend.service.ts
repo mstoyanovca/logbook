@@ -18,6 +18,7 @@ export class BackendService implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body } = request;
+    console.log(JSON.stringify(url))
     return handleRoute();
 
     function handleRoute() {
@@ -54,7 +55,8 @@ export class BackendService implements HttpInterceptor {
 
       function authenticate() {
         const { email, password } = body;
-        const user = users.find(u => u.email === email && u.password === password && u.isVerified);
+        console.log(JSON.stringify(users));
+        let user = users.find(u => u.email === email && u.password === password && u.isVerified);
 
         if (!user) return error('Invalid email or password');
 
