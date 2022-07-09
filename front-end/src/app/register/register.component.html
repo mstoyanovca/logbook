@@ -1,0 +1,36 @@
+<div class="container-fluid">
+  <form class="mt-4" (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
+    <div class="row mb-3">
+      <div class="col-lg-2">
+        <label class="form-label" for="email">Email</label>
+      </div>
+      <div class="col-lg-4">
+        <input class="form-control form-control-sm" id="email" name="email" type="email" email required [(ngModel)]="user.email" #email="ngModel">
+        <div class="alert alert-danger mt-2 p-0" *ngIf="email.invalid && (email.dirty || email.touched)">
+          <div class="p-1" *ngIf="email.errors?.['required']">Email is required</div>
+          <div class="p-1" *ngIf="email.errors?.['email']">Email is invalid</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-lg-2">
+        <label class="form-label" for="password">Password</label>
+      </div>
+      <div class="col-lg-4">
+        <input class="form-control form-control-sm" id="password" name="password" type="password" minlength="6" maxlength="32"
+               required placeholder="6-32 characters" [(ngModel)]="user.password" #password="ngModel">
+        <div class="alert alert-danger mt-2 p-0" *ngIf="password.invalid && (password.dirty || password.touched)">
+          <div class="p-1" *ngIf="password.errors?.['required']">Password is required</div>
+          <div class="p-1" *ngIf="password.errors?.['minlength']">Password must be at least 6 characters</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-lg-4 offset-lg-2">
+        <button class="btn btn-primary btn-sm" type="submit" [disabled]="registerForm.invalid">
+          <i class="bi bi-person-plus"></i> Register <span class="spinner-border spinner-border-sm mr-1" *ngIf="loading"></span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
