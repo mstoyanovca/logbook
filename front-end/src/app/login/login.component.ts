@@ -11,9 +11,7 @@ export class LoginComponent {
   loading = false;
   user = new User();
 
-  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) {
-
-  }
+  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) { }
 
   onSubmit(loginForm: NgForm) {
     const user: User = loginForm.value;

@@ -11,7 +11,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './security/jwt.interceptor';
 import { ErrorInterceptor } from './security/error.interceptor';
 import { FormsModule } from '@angular/forms';
-// import { backendProvider } from './service/backend.service';
+import { backendProvider } from './service/backend.service';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -32,7 +32,7 @@ import { CommonModule } from '@angular/common';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // backendProvider
+    backendProvider
   ],
   bootstrap: [AppComponent]
 })

@@ -2,18 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, materialize, dematerialize } from 'rxjs/operators';
+import { User } from '../model/user';
 
 const userKey = 'logbook';
-let user = JSON.parse(localStorage.getItem(userKey)) || [];
+const token = localStorage.getItem(userKey);
+var users: User[];
+if (token !== null ) {
+  users = JSON.parse(token);
+} else {
+  users = [];
+}
 
 @Injectable({ providedIn: 'root' })
 export class BackendService implements HttpInterceptor {
 
-  constructor() { }
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body } = request;
-
     return handleRoute();
 
     function handleRoute() {
@@ -35,9 +39,9 @@ export class BackendService implements HttpInterceptor {
         case url.endsWith('/user/reset-password') && method === 'POST':
           return resetPassword();
         case url.endsWith('/user') && method === 'GET':
-          return getUser();
+          return findAll();
         case url.match(/\/user\/\d+$/) && method === 'GET':
-          return getUserById();
+          return findById();
         case url.endsWith('/user') && method === 'POST':
           return createUser();
         case url.match(/\/user\/\d+$/) && method === 'PUT':
@@ -46,12 +50,11 @@ export class BackendService implements HttpInterceptor {
           return deleteUser();
         default:
           return next.handle(request);
-        }
       }
 
       function authenticate() {
         const { email, password } = body;
-        const user: User = user.find(x => x.email === email && x.password === password && x.isVerified);
+        const user = users.find(u => u.email === email && u.password === password && u.isVerified);
 
         if (!user) return error('Invalid email or password');
 
@@ -66,7 +69,7 @@ export class BackendService implements HttpInterceptor {
 
         if (!refreshToken) return unauthorized();
 
-        const user = user.find(x => x.refreshTokens.includes(refreshToken));
+        const user = users.find(x => x.refreshTokens.includes(refreshToken));
 
         if (!user) return unauthorized();
 
@@ -81,10 +84,11 @@ export class BackendService implements HttpInterceptor {
         if (!isAuthenticated()) return unauthorized();
 
         const refreshToken = getRefreshToken();
-        const user = user.find(x => x.refreshTokens.includes(refreshToken));
-
-        user.refreshTokens = user.refreshTokens.filter(x => x !== refreshToken);
-        localStorage.setItem(userKey, JSON.stringify(user));
+        const user = users.find(u => u.refreshTokens.includes(refreshToken));
+        if (user) {
+          user.refreshTokens = user.refreshTokens.filter(rt => rt !== refreshToken);
+          localStorage.setItem(userKey, JSON.stringify(users));
+        }
 
         return ok();
       }
@@ -92,7 +96,7 @@ export class BackendService implements HttpInterceptor {
       function register() {
         const user = body;
 
-        if (user.find(x => x.email === user.email)) {
+        if (users.find(x => x.email === user.email)) {
           /* setTimeout(() => {
             alertService.info(`
               <h4>Email Already Registered</h4>
@@ -106,18 +110,12 @@ export class BackendService implements HttpInterceptor {
         }
 
         user.id = newUserId();
-        if (user.id === 1) {
-          user.role = Role.Admin;
-        } else {
-          user.role = Role.User;
-        }
-        user.dateCreated = new Date().toISOString();
         user.verificationToken = new Date().getTime().toString();
         user.isVerified = false;
         user.refreshTokens = [];
         delete user.confirmPassword;
-        user.push(user);
-        localStorage.setItem(userKey, JSON.stringify(user));
+        users.push(user);
+        localStorage.setItem(userKey, JSON.stringify(users));
 
         /* setTimeout(() => {
           const verifyUrl = `${location.origin}/user/verify-email?token=${user.verificationToken}`;
@@ -135,7 +133,7 @@ export class BackendService implements HttpInterceptor {
 
       function verifyEmail() {
         const { token } = body;
-        const user = user.find(x => !!x.verificationToken && x.verificationToken === token);
+        const user = users.find(x => !!x.verificationToken && x.verificationToken === token);
 
         if (!user) return error('Verification failed');
 
@@ -147,12 +145,12 @@ export class BackendService implements HttpInterceptor {
 
       function forgotPassword() {
         const { email } = body;
-        const user = user.find(x => x.email === email);
+        const user = users.find(x => x.email === email);
         if (!user) return ok();
 
         user.resetToken = new Date().getTime().toString();
-        user.resetTokenExpires = new Date(Date.now() + 15*60*1000).toISOString();
-        localStorage.setItem(userKey, JSON.stringify(user));
+        user.resetTokenExpiration = new Date(Date.now() + 15*60*1000).toISOString();
+        localStorage.setItem(userKey, JSON.stringify(users));
 
         /* setTimeout(() => {
           const resetUrl = `${location.origin}/user/reset-password?token=${user.resetToken}`;
@@ -169,50 +167,46 @@ export class BackendService implements HttpInterceptor {
 
         function validateResetToken() {
           const { token } = body;
-          const user = user.find(x => !!x.resetToken && x.resetToken === token && new Date() < new Date(x.resetTokenExpires));
-
+          const user = users.find(u => u.resetToken && u.resetToken === token && u.resetTokenExpiration && new Date() < new Date(u.resetTokenExpiration));
           if (!user) return error('Invalid token');
-
           return ok();
         }
 
         function resetPassword() {
           const { token, password } = body;
-          const user = user.find(x => !!x.resetToken && x.resetToken === token && new Date() < new Date(x.resetTokenExpires));
-
+          const user = users.find(u => !!u.resetToken && u.resetToken === token && u.resetTokenExpiration && new Date() < new Date(u.resetTokenExpiration));
           if (!user) return error('Invalid token');
 
           user.password = password;
           user.isVerified = true;
           delete user.resetToken;
-          delete user.resetTokenExpires;
+          delete user.resetTokenExpiration;
           localStorage.setItem(userKey, JSON.stringify(user));
 
           return ok();
         }
 
-        function getUser() {
+        function findAll() {
           if (!isAuthenticated()) return unauthorized();
-          return ok(user.map(x => basicDetails(x)));
+          return ok(users.map(u => basicDetails(u)));
         }
 
-        function getUserById() {
+        function findById() {
           if (!isAuthenticated()) return unauthorized();
 
-          let user = user.find(x => x.id === idFromUrl());
+          let user = users.find(u => parseInt(u.id) === idFromUrl());
 
-          if (user.id !== currentUser().id && !isAuthorized(Role.Admin)) {
+          const cu: User = currentUser()
+          if (user && cu && user.id !== cu.id) {
             return unauthorized();
           }
 
-          return ok(basicDetails(user));
+          return ok(basicDetails(user!));
         }
 
         function createUser() {
-          if (!isAuthorized(Role.Admin)) return unauthorized();
-
           const user = body;
-          if (user.find(x => x.email === user.email)) {
+          if (users.find(u => u.email === user.email)) {
             return error(`Email ${user.email} is already registered`);
           }
 
@@ -221,8 +215,8 @@ export class BackendService implements HttpInterceptor {
           user.isVerified = true;
           user.refreshTokens = [];
           delete user.confirmPassword;
-          user.push(user);
-          localStorage.setItem(userKey, JSON.stringify(user));
+          users.push(user);
+          localStorage.setItem(userKey, JSON.stringify(users));
 
           return ok();
         }
@@ -231,10 +225,10 @@ export class BackendService implements HttpInterceptor {
           if (!isAuthenticated()) return unauthorized();
 
           let params = body;
-          let user = user.find(x => x.id === idFromUrl());
+          let user = users.find(u => parseInt(u.id) === idFromUrl());
 
           // user accounts can update own profile and admin accounts can update all profiles
-          if (user.id !== currentUser().id && !isAuthorized(Role.Admin)) {
+          if (user && currentUser() && user.id !== currentUser().id) {
             return unauthorized();
           }
 
@@ -246,34 +240,33 @@ export class BackendService implements HttpInterceptor {
           delete params.confirmPassword;
 
           // update and save user
-          Object.assign(user, params);
-          localStorage.setItem(userKey, JSON.stringify(user));
+          if(user) {
+            Object.assign(user, params);
+            localStorage.setItem(userKey, JSON.stringify(user));
+          }
 
-          return ok(basicDetails(user));
+          return ok(basicDetails(user!));
         }
 
         function deleteUser() {
           if (!isAuthenticated()) return unauthorized();
 
-          let user = user.find(x => x.id === idFromUrl());
-
-          // user accounts can delete own account and admin accounts can delete any account
-          if (user.id !== currentUser().id && !isAuthorized(Role.Admin)) {
+          let user = users.find(x => parseInt(x.id) === idFromUrl());
+          if (user && user.id !== currentUser().id) {
             return unauthorized();
           }
 
-          // delete account then save
-          user = user.filter(x => x.id !== idFromUrl());
-          localStorage.setItem(userKey, JSON.stringify(user));
+          users = users.filter(u => parseInt(u.id) !== idFromUrl());
+          localStorage.setItem(userKey, JSON.stringify(users));
+
           return ok();
         }
 
-        // helper functions
-        function ok(body?) {
+        function ok(body?: any) {
           return of(new HttpResponse({ status: 200, body })).pipe(delay(500)); // delay observable to simulate server api call
         }
 
-        function error(message) {
+        function error(message: string) {
           // call materialize and dematerialize to ensure delay even if an error is thrown:
           return throwError({ error: { message } }).pipe(materialize(), delay(500), dematerialize());
         }
@@ -282,45 +275,41 @@ export class BackendService implements HttpInterceptor {
           return throwError({ status: 401, error: { message: 'Unauthorized' }}).pipe(materialize(), delay(500), dematerialize());
         }
 
-        function basicDetails(user) {
-          const { id, title, firstName, lastName, email, role, dateCreated, isVerified } = user;
-          return { id, title, firstName, lastName, email, role, dateCreated, isVerified };
+        function basicDetails(user: User) {
+          const { id, firstName, lastName, email, isVerified } = user;
+          return { id, firstName, lastName, email, isVerified };
         }
 
         function isAuthenticated() {
           return !!currentUser();
         }
 
-        function isAuthorized(role) {
-          const user = currentUser();
-          if (!user) return false;
-          return user.role === role;
-        }
-
-        function idFromUrl() {
+        function idFromUrl(): number {
           const urlParts = url.split('/');
           return parseInt(urlParts[urlParts.length - 1]);
         }
 
         function newUserId() {
-          return user.length ? Math.max(...user.map(x => x.id)) + 1 : 1;
+          return users.length ? Math.max(...users.map(u => +u.id)) + 1 : 1;
         }
 
-        function currentUser() {
-          // check if jwt token is in auth header
+        function currentUser(): User {
           const authHeader = headers.get('Authorization');
-          if (!authHeader.startsWith('Bearer fake-jwt-token')) return;
+          if (!authHeader || !authHeader.startsWith('Bearer fake-jwt-token')) return new User();
 
-          // check if token is expired
           const jwtToken = JSON.parse(atob(authHeader.split('.')[1]));
           const tokenExpired = Date.now() > (jwtToken.exp * 1000);
-          if (tokenExpired) return;
+          if (tokenExpired) return new User();
 
-          const user = user.find(x => x.id === jwtToken.id);
-          return user;
+          const user = users.find(u => u.id === jwtToken.id);
+          if (user) {
+            return user;
+          } else {
+            return new User();
+          }
         }
 
-        function generateJwtToken(user) {
+        function generateJwtToken(user: User) {
           // create token that expires in 15 minutes
           const tokenPayload = {
             exp: Math.round(new Date(Date.now() + 15*60*1000).getTime() / 1000),
@@ -340,15 +329,14 @@ export class BackendService implements HttpInterceptor {
         }
 
         function getRefreshToken() {
-          // get refresh token from cookie
           return (document.cookie.split(';').find(x => x.includes('fakeRefreshToken')) || '=').split('=')[1];
         }
       }
   }
-
-  export let backendProvider = {
-      provide: HTTP_INTERCEPTORS,
-      useClass: BackendService,
-      multi: true
-  };
 }
+
+export let backendProvider = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: BackendService,
+  multi: true
+};
