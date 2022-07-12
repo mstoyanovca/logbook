@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-@Component({
-  selector: 'app-logbook',
-  templateUrl: './logbook.component.html'
-})
-export class LogbookComponent implements OnInit {
+@Component({ templateUrl: './logbook.component.html' })
+export class LogbookComponent {
 
   constructor() { }
-
-  ngOnInit(): void { }
 }

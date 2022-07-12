@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { UserService } from '../service/user.service';
-import { User } from '../model/user';
+import { UserService } from '../../service/user.service';
+import { User } from '../../model/user';
 
-@Component({ selector: 'app-login', templateUrl: './login.component.html' })
+@Component({ templateUrl: './login.component.html' })
 export class LoginComponent {
   loading = false;
   user = new User();

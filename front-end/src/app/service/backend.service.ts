@@ -18,7 +18,6 @@ export class BackendService implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body } = request;
-    console.log(JSON.stringify(url))
     return handleRoute();
 
     function handleRoute() {
@@ -55,7 +54,6 @@ export class BackendService implements HttpInterceptor {
 
       function authenticate() {
         const { email, password } = body;
-        console.log(JSON.stringify(users));
         let user = users.find(u => u.email === email && u.password === password && u.isVerified);
 
         if (!user) return error('Invalid email or password');
@@ -135,7 +133,7 @@ export class BackendService implements HttpInterceptor {
 
       function verifyEmail() {
         const { token } = body;
-        const user = users.find(x => !!x.verificationToken && x.verificationToken === token);
+        const user = users.find(u => !!u.verificationToken && u.verificationToken === token);
 
         if (!user) return error('Verification failed');
 
@@ -147,7 +145,7 @@ export class BackendService implements HttpInterceptor {
 
       function forgotPassword() {
         const { email } = body;
-        const user = users.find(x => x.email === email);
+        const user = users.find(u => u.email === email);
         if (!user) return ok();
 
         user.resetToken = new Date().getTime().toString();

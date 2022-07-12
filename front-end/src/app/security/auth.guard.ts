@@ -7,11 +7,13 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router, private userService: UserService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (this.userService.userValue && this.userService.userValue.jwtToken) {
+    // TODO: uncomment this:
+    /* if (this.userService.userValue && this.userService.userValue.jwtToken) {
       return true;
     } else {
       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
       return false;
-    }
+    } */
+    return true;
   }
 }

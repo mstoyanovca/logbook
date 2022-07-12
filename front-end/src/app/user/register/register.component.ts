@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import {NgForm} from '@angular/forms';
-import { UserService } from '../service/user.service';
-import { User } from '../model/user';
+import { UserService } from '../../service/user.service';
+import { User } from '../../model/user';
 
-@Component({ selector: 'app-register', templateUrl: './register.component.html' })
+@Component({ templateUrl: './register.component.html' })
 export class RegisterComponent {
   user: User;
   loading = false;
