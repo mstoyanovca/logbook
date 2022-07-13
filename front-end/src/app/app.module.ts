@@ -6,7 +6,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './service/user.service';
 import { JwtInterceptor } from './security/jwt.interceptor';
 import { ErrorInterceptor } from './security/error.interceptor';
@@ -14,8 +13,7 @@ import { backendProvider } from './service/backend.service';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ProfileComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
