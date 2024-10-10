@@ -1,3 +1,5 @@
+A QSO logbook for ham radio operators.
+
 - Node.js, npm, Angular CLI, Angular 8, TypeScript, Bootsrtap, Jasmine, Karma, Protractor
 - Scala 2.12, sbt, ScalaTest, Play, Slick
 
